@@ -46,6 +46,21 @@ mute:
   usage: "&cUsage: /mute <player> <duration> [reason]"
   perma-usage: "&cUsage: /permamute <player> [reason]"
   unmute-usage: "&cUsage: /unmute <player> [reason]"
+  module-disabled: "&cMute module is currently disabled."
+  no-permission: "&cYou do not have permission to use mute commands."
+  player-not-found: "&cPlayer not found: &e%player%"
+  invalid-duration: "&cInvalid duration: &e%duration%&c. Examples: 30s, 10m, 2h, 7d"
+  success: "&aMuted &e%player%&a. Reason: &f%reason%&a, duration: &e%duration%"
+  perma-success: "&aPermanently muted &e%player%&a. Reason: &f%reason%"
+  unmute-success: "&aUnmuted &e%player%&a. Reason: &f%reason%"
+  not-muted: "&cPlayer &e%player% &cis not muted."
+  received: "&cYou have been muted. Reason: &f%reason%&c, duration: &e%duration%"
+  perma-received: "&cYou have been permanently muted. Reason: &f%reason%"
+  unmuted-received: "&aYou have been unmuted. Reason: &f%reason%"
+  chat-blocked:
+    - "&cYou are currently muted and cannot chat."
+    - "&7Reason: &f%reason%"
+    - "&7Remaining: &e%remaining%"
 
 ban:
   tempban-usage: "&cUsage: /tempban <player> <duration> [reason]"

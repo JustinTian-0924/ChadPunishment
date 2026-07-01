@@ -1,5 +1,5 @@
 name: ChadPunishment
-version: 0.1.0
+version: 0.2.0
 main: basementhost.randomchad.ChadPunishmentPlugin
 api-version: '26.1.2'
 description: Simple punishment management plugin
@@ -22,6 +22,18 @@ commands:
     description: Check active warnings of a player
     usage: /checkwarn <player>
 
+  mute:
+    description: Mute a player
+    usage: /mute <player> <duration> [reason]
+
+  permamute:
+    description: Permanently mute a player
+    usage: /permamute <player> [reason]
+
+  unmute:
+    description: Unmute a player
+    usage: /unmute <player> [reason]
+
 permissions:
   chadpunishment.reload:
     description: Allows reloading ChadPunishment config and language files
@@ -37,4 +49,16 @@ permissions:
 
   chadpunishment.checkwarn:
     description: Allows checking player warnings
+    default: op
+
+  chadpunishment.mute:
+    description: Allows muting players
+    default: op
+
+  chadpunishment.permamute:
+    description: Allows permanently muting players
+    default: op
+
+  chadpunishment.unmute:
+    description: Allows unmuting players
     default: op

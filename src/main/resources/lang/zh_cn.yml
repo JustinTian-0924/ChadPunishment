@@ -46,6 +46,21 @@ mute:
   usage: "&c用法: /mute <player> <duration> [reason]"
   perma-usage: "&c用法: /permamute <player> [reason]"
   unmute-usage: "&c用法: /unmute <player> [reason]"
+  module-disabled: "&c禁言模块当前已关闭。"
+  no-permission: "&c你没有权限使用禁言指令。"
+  player-not-found: "&c找不到这个玩家: &e%player%"
+  invalid-duration: "&c无效的时间格式: &e%duration%&c。示例: 30s, 10m, 2h, 7d"
+  success: "&a已禁言玩家 &e%player%&a。原因: &f%reason%&a，持续时间: &e%duration%"
+  perma-success: "&a已永久禁言玩家 &e%player%&a。原因: &f%reason%"
+  unmute-success: "&a已解除玩家 &e%player% &a的禁言。原因: &f%reason%"
+  not-muted: "&c玩家 &e%player% &c当前没有被禁言。"
+  received: "&c你已被禁言。原因: &f%reason%&c，持续时间: &e%duration%"
+  perma-received: "&c你已被永久禁言。原因: &f%reason%"
+  unmuted-received: "&a你的禁言已被解除。原因: &f%reason%"
+  chat-blocked:
+    - "&c你当前处于禁言状态，无法发言。"
+    - "&7原因: &f%reason%"
+    - "&7剩余时间: &e%remaining%"
 
 ban:
   tempban-usage: "&c用法: /tempban <player> <duration> [reason]"

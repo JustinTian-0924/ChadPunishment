@@ -2,6 +2,7 @@ package basementhost.randomchad.command;
 
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
+import basementhost.randomchad.mutemodule.MuteManager;
 import basementhost.randomchad.warnmodule.WarnManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,18 +18,21 @@ public class ChadPunishmentCommand implements TabExecutor {
 	private final LangManager langManager;
 	private final ModuleManager moduleManager;
 	private final WarnManager warnManager;
+	private final MuteManager muteManager;
 
 
 	public ChadPunishmentCommand(
 			JavaPlugin plugin,
 			LangManager langManager,
 			ModuleManager moduleManager,
-			WarnManager warnManager
+			WarnManager warnManager,
+			MuteManager muteManager
 	) {
 		this.plugin = plugin;
 		this.langManager = langManager;
 		this.moduleManager = moduleManager;
 		this.warnManager = warnManager;
+		this.muteManager = muteManager;
 	}
 
 	@Override
@@ -47,6 +51,7 @@ public class ChadPunishmentCommand implements TabExecutor {
 			plugin.reloadConfig();
 			langManager.reload();
 			warnManager.reload();
+			muteManager.reload();
 			langManager.sendMessage(sender, "command.reload-success");
 			return true;
 		}
