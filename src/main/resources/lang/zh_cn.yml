@@ -1,0 +1,54 @@
+prefix: "&7[&cChadPunishment&7] "
+
+command:
+  player-only: "&c这个指令只能由玩家使用。"
+  no-permission: "&c你没有权限使用这个指令。"
+  unknown-command: "&c未知的子指令。"
+  reload-success: "&a配置文件和语言文件已重载。"
+
+usage:
+  main:
+    - "&8&m-----------------------------"
+    - "&cChadPunishment 使用帮助"
+    - "&e/chadpunishment reload &7- 重载插件"
+    - "&e/chadpunishment status &7- 查看模块状态"
+    - "&8&m-----------------------------"
+
+module:
+  status-header: "&8&m---------- &c模块状态 &8&m----------"
+  status-line: "&e%module%&7: %status%"
+  enabled: "&a已开启"
+  disabled: "&c已关闭"
+  disabled-message: "&c该模块当前已被关闭。"
+
+warn:
+  usage: "&c用法: /warn <player> [reason...] [duration]"
+  check-usage: "&c用法: /checkwarn <player>"
+  module-disabled: "&c警告模块当前已关闭。"
+  no-permission: "&c你没有权限使用警告指令。"
+  player-not-found: "&c找不到这个玩家: &e%player%"
+  invalid-duration: "&c无效的时间格式: &e%duration%&c。示例: 30s, 10m, 2h, 7d"
+  success: "&a已警告玩家 &e%player%&a。原因: &f%reason%&a，持续时间: &e%duration%&a。当前有效警告数: &c%active_warns%"
+  received: "&c你收到了一条警告。原因: &f%reason%&c，持续时间: &e%duration%"
+  check-header: "&8&m---------- &c%player% 的有效警告 &8&m----------"
+  check-empty: "&a这个玩家当前没有有效警告。"
+  check-line: "&e#%number% &7原因: &f%reason% &7| 执行者: &e%issuer% &7| 剩余: &c%remaining%"
+  expired-cleaned: "&7已清理过期警告。"
+
+time:
+  permanent: "永久"
+  seconds: "%seconds%秒"
+  minutes-seconds: "%minutes%分钟%seconds%秒"
+  hours-minutes: "%hours%小时%minutes%分钟"
+  days-hours: "%days%天%hours%小时"
+
+mute:
+  usage: "&c用法: /mute <player> <duration> [reason]"
+  perma-usage: "&c用法: /permamute <player> [reason]"
+  unmute-usage: "&c用法: /unmute <player> [reason]"
+
+ban:
+  tempban-usage: "&c用法: /tempban <player> <duration> [reason]"
+  ban-usage: "&c用法: /ban <player> [reason]"
+  banip-usage: "&c用法: /banip <player> [duration] [reason]"
+  unban-usage: "&c用法: /unban <player> [reason]"

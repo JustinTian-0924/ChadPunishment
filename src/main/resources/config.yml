@@ -1,0 +1,18 @@
+language: "en_us"
+modules:
+  warn: true
+  mute: true
+  ban: true
+  ban-ip: true
+settings:
+  default-reason: "Default Reason"
+
+warn:
+  default-ttl: "90d"
+  # These commands are executed when the player's current "valid warning count" reaches a specified number.
+  # equivalent to panel input
+  active-count-actions:
+    3:
+      - "kick %player% You have reached 3 active warnings."
+    5:
+      - "tempban %player% 1d Too many active warnings."

@@ -1,0 +1,40 @@
+name: ChadPunishment
+version: 0.1.0
+main: basementhost.randomchad.ChadPunishmentPlugin
+api-version: '26.1.2'
+description: Simple punishment management plugin
+author: Random_Chad
+
+commands:
+  chadpunishment:
+    description: Main command for ChadPunishment
+    aliases:
+      - cpunish
+      - chadpunish
+      - punishment
+    usage: /chadpunishment
+
+  warn:
+    description: Warn a player
+    usage: /warn <player> [reason...] [duration]
+
+  checkwarn:
+    description: Check active warnings of a player
+    usage: /checkwarn <player>
+
+permissions:
+  chadpunishment.reload:
+    description: Allows reloading ChadPunishment config and language files
+    default: op
+
+  chadpunishment.status:
+    description: Allows checking ChadPunishment module status
+    default: op
+
+  chadpunishment.warn:
+    description: Allows warning players
+    default: op
+
+  chadpunishment.checkwarn:
+    description: Allows checking player warnings
+    default: op

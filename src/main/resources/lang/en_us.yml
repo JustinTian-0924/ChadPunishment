@@ -1,0 +1,54 @@
+prefix: "&7[&cChadPunishment&7] "
+
+command:
+  player-only: "&cOnly players can use this command."
+  no-permission: "&cYou do not have permission to use this command."
+  unknown-command: "&cUnknown sub-command."
+  reload-success: "&aConfig and language files reloaded."
+
+usage:
+  main:
+    - "&8&m-----------------------------"
+    - "&cChadPunishment Help"
+    - "&e/chadpunishment reload &7- Reload plugin"
+    - "&e/chadpunishment status &7- View module status"
+    - "&8&m-----------------------------"
+
+module:
+  status-header: "&8&m---------- &cModule Status &8&m----------"
+  status-line: "&e%module%&7: %status%"
+  enabled: "&aEnabled"
+  disabled: "&cDisabled"
+  disabled-message: "&cThis module is currently disabled."
+
+warn:
+  usage: "&cUsage: /warn <player> [reason...] [duration]"
+  check-usage: "&cUsage: /checkwarn <player>"
+  module-disabled: "&cWarn module is currently disabled."
+  no-permission: "&cYou do not have permission to use warn commands."
+  player-not-found: "&cPlayer not found: &e%player%"
+  invalid-duration: "&cInvalid duration: &e%duration%&c. Examples: 30s, 10m, 2h, 7d"
+  success: "&aWarned &e%player%&a. Reason: &f%reason%&a, duration: &e%duration%&a. Active warnings: &c%active_warns%"
+  received: "&cYou have received a warning. Reason: &f%reason%&c, duration: &e%duration%"
+  check-header: "&8&m---------- &cActive warnings of %player% &8&m----------"
+  check-empty: "&aThis player has no active warnings."
+  check-line: "&e#%number% &7Reason: &f%reason% &7| Issuer: &e%issuer% &7| Remaining: &c%remaining%"
+  expired-cleaned: "&7Expired warnings cleaned."
+
+time:
+  permanent: "Permanent"
+  seconds: "%seconds%s"
+  minutes-seconds: "%minutes%m %seconds%s"
+  hours-minutes: "%hours%h %minutes%m"
+  days-hours: "%days%d %hours%h"
+
+mute:
+  usage: "&cUsage: /mute <player> <duration> [reason]"
+  perma-usage: "&cUsage: /permamute <player> [reason]"
+  unmute-usage: "&cUsage: /unmute <player> [reason]"
+
+ban:
+  tempban-usage: "&cUsage: /tempban <player> <duration> [reason]"
+  ban-usage: "&cUsage: /ban <player> [reason]"
+  banip-usage: "&cUsage: /banip <player> [duration] [reason]"
+  unban-usage: "&cUsage: /unban <player> [reason]"
