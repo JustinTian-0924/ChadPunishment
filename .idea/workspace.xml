@@ -5,17 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="030c91b8-a5c7-4d5a-82c9-3bed1c9af51f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/mutemodule/MuteChatListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/mutemodule/MuteCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/mutemodule/MuteManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/mutemodule/MuteRecord.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/mutemodule/PermaMuteCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/mutemodule/UnmuteCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/BanCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/BanIpCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/BanLoginListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/BanManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/BanRecord.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/IpBanLoginListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/IpBanManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/IpBanRecord.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/TempBanCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/UnbanCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/banmodule/UnbanIpCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/util/IpUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/ChadPunishmentPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/ChadPunishmentPlugin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/command/ChadPunishmentCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/command/ChadPunishmentCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/lang/LangManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/basementhost/randomchad/lang/LangManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/lang/en_us.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/lang/en_us.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/lang/zh_cn.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />

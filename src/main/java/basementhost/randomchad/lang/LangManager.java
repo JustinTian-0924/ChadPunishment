@@ -74,6 +74,22 @@ public class LangManager {
 		return message;
 	}
 
+	public List<String> getRawMessageList(String path, Map<String, String> placeholders) {
+		List<String> messages = lang.getStringList(path);
+
+		for (int i = 0; i < messages.size(); i++) {
+			String message = messages.get(i);
+
+			for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+				message = message.replace(entry.getKey(), entry.getValue());
+			}
+
+			messages.set(i, color(message));
+		}
+
+		return messages;
+	}
+
 	public void sendMessage(CommandSender sender, String path) {
 		sender.sendMessage(getMessage(path));
 	}

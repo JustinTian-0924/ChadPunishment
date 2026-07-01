@@ -13,6 +13,12 @@ warn:
   # equivalent to panel input
   active-count-actions:
     3:
-      - "kick %player% You have reached 3 active warnings."
+      - "kick %player% You have reached 3 active warnings, make sure to follow the server rules more properly."
     5:
-      - "tempban %player% 1d Too many active warnings."
+      - "tempban %player% 12h You recieved too many active warnings, make sure to check on the server rules!"
+    7:
+      - "tempban %player% 3d You had violating the server rules for too many times!"
+    9:
+      - "tempban %player% 7d You had violating the server rules for way too many times, This will be your last warning!"
+    10:
+      - "ban %player% You had violated the server rules for way too many times, hereby you are permabanned from this server."

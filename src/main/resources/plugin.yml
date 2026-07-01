@@ -1,5 +1,5 @@
 name: ChadPunishment
-version: 0.2.0
+version: 0.3.0
 main: basementhost.randomchad.ChadPunishmentPlugin
 api-version: '26.1.2'
 description: Simple punishment management plugin
@@ -34,6 +34,26 @@ commands:
     description: Unmute a player
     usage: /unmute <player> [reason]
 
+  tempban:
+    description: Temporarily ban a player
+    usage: /tempban <player> <duration> [reason]
+
+  ban:
+    description: Ban a player
+    usage: /ban <player> [duration] [reason]
+
+  unban:
+    description: Unban a player
+    usage: /unban <player> [reason]
+
+  banip:
+    description: IP-ban a player or IP address
+    usage: /banip <player|ip> [duration] [reason]
+
+  unbanip:
+    description: Unban an IP address
+    usage: /unbanip <player|ip> [reason]
+
 permissions:
   chadpunishment.reload:
     description: Allows reloading ChadPunishment config and language files
@@ -61,4 +81,24 @@ permissions:
 
   chadpunishment.unmute:
     description: Allows unmuting players
+    default: op
+
+  chadpunishment.tempban:
+    description: Allows temporarily banning players
+    default: op
+
+  chadpunishment.ban:
+    description: Allows banning players
+    default: op
+
+  chadpunishment.unban:
+    description: Allows unbanning players
+    default: op
+
+  chadpunishment.banip:
+    description: Allows IP banning players
+    default: op
+
+  chadpunishment.unbanip:
+    description: Allows unbanning IP addresses
     default: op

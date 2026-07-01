@@ -1,5 +1,6 @@
 package basementhost.randomchad;
 
+import basementhost.randomchad.banmodule.*;
 import basementhost.randomchad.command.ChadPunishmentCommand;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
@@ -19,6 +20,8 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 	private ModuleManager moduleManager;
 	private WarnManager warnManager;
 	private MuteManager muteManager;
+	private BanManager banManager;
+	private IpBanManager ipBanManager;
 
 	@Override
 	public void onEnable() {
@@ -28,6 +31,8 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 		this.moduleManager = new ModuleManager(this);
 		this.warnManager = new WarnManager(this, langManager);
 		this.muteManager = new MuteManager(this);
+		this.banManager = new BanManager(this, langManager);
+		this.ipBanManager = new IpBanManager(this, langManager);
 
 		registerCommands();
 		registerListeners();
@@ -46,7 +51,9 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				langManager,
 				moduleManager,
 				warnManager,
-				muteManager
+				muteManager,
+				banManager,
+				ipBanManager
 		);
 
 		if (getCommand("chadpunishment") != null) {
@@ -112,11 +119,81 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 			getCommand("unmute").setExecutor(unmuteCommand);
 			getCommand("unmute").setTabCompleter(unmuteCommand);
 		}
+
+		TempBanCommand tempBanCommand = new TempBanCommand(
+				this,
+				langManager,
+				moduleManager,
+				banManager
+		);
+
+		if (getCommand("tempban") != null) {
+			getCommand("tempban").setExecutor(tempBanCommand);
+			getCommand("tempban").setTabCompleter(tempBanCommand);
+		}
+
+		BanCommand banCommand = new BanCommand(
+				this,
+				langManager,
+				moduleManager,
+				banManager
+		);
+
+		if (getCommand("ban") != null) {
+			getCommand("ban").setExecutor(banCommand);
+			getCommand("ban").setTabCompleter(banCommand);
+		}
+
+		UnbanCommand unbanCommand = new UnbanCommand(
+				this,
+				langManager,
+				moduleManager,
+				banManager
+		);
+
+		if (getCommand("unban") != null) {
+			getCommand("unban").setExecutor(unbanCommand);
+			getCommand("unban").setTabCompleter(unbanCommand);
+		}
+
+		BanIpCommand banIpCommand = new BanIpCommand(
+				this,
+				langManager,
+				moduleManager,
+				ipBanManager
+		);
+
+		if (getCommand("banip") != null) {
+			getCommand("banip").setExecutor(banIpCommand);
+			getCommand("banip").setTabCompleter(banIpCommand);
+		}
+
+		UnbanIpCommand unbanIpCommand = new UnbanIpCommand(
+				this,
+				langManager,
+				moduleManager,
+				ipBanManager
+		);
+
+		if (getCommand("unbanip") != null) {
+			getCommand("unbanip").setExecutor(unbanIpCommand);
+			getCommand("unbanip").setTabCompleter(unbanIpCommand);
+		}
 	}
 
 	private void registerListeners() {
 		getServer().getPluginManager().registerEvents(
 				new MuteChatListener(langManager, moduleManager, muteManager),
+				this
+		);
+
+		getServer().getPluginManager().registerEvents(
+				new BanLoginListener(moduleManager, banManager),
+				this
+		);
+
+		getServer().getPluginManager().registerEvents(
+				new IpBanLoginListener(moduleManager, ipBanManager),
 				this
 		);
 	}
@@ -135,5 +212,13 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 
 	public MuteManager getMuteManager() {
 		return muteManager;
+	}
+
+	public BanManager getBanManager() {
+		return banManager;
+	}
+
+	public IpBanManager getIpBanManager() {
+		return ipBanManager;
 	}
 }

@@ -1,5 +1,7 @@
 package basementhost.randomchad.command;
 
+import basementhost.randomchad.banmodule.BanManager;
+import basementhost.randomchad.banmodule.IpBanManager;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.mutemodule.MuteManager;
@@ -19,6 +21,8 @@ public class ChadPunishmentCommand implements TabExecutor {
 	private final ModuleManager moduleManager;
 	private final WarnManager warnManager;
 	private final MuteManager muteManager;
+	private final BanManager banManager;
+	private final IpBanManager ipBanManager;
 
 
 	public ChadPunishmentCommand(
@@ -26,13 +30,17 @@ public class ChadPunishmentCommand implements TabExecutor {
 			LangManager langManager,
 			ModuleManager moduleManager,
 			WarnManager warnManager,
-			MuteManager muteManager
+			MuteManager muteManager,
+			BanManager banManager,
+			IpBanManager ipBanManager
 	) {
 		this.plugin = plugin;
 		this.langManager = langManager;
 		this.moduleManager = moduleManager;
 		this.warnManager = warnManager;
 		this.muteManager = muteManager;
+		this.banManager = banManager;
+		this.ipBanManager = ipBanManager;
 	}
 
 	@Override
@@ -52,6 +60,8 @@ public class ChadPunishmentCommand implements TabExecutor {
 			langManager.reload();
 			warnManager.reload();
 			muteManager.reload();
+			banManager.reload();
+			ipBanManager.reload();
 			langManager.sendMessage(sender, "command.reload-success");
 			return true;
 		}
