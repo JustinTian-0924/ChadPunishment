@@ -1,5 +1,7 @@
 package basementhost.randomchad.mutemodule;
 
+import basementhost.randomchad.history.PunishmentHistoryManager;
+import basementhost.randomchad.history.PunishmentType;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.DurationUtil;
@@ -21,17 +23,20 @@ public class PermaMuteCommand implements TabExecutor {
 	private final LangManager langManager;
 	private final ModuleManager moduleManager;
 	private final MuteManager muteManager;
+	private final PunishmentHistoryManager historyManager;
 
 	public PermaMuteCommand(
 			JavaPlugin plugin,
 			LangManager langManager,
 			ModuleManager moduleManager,
-			MuteManager muteManager
+			MuteManager muteManager,
+			PunishmentHistoryManager historyManager
 	) {
 		this.plugin = plugin;
 		this.langManager = langManager;
 		this.moduleManager = moduleManager;
 		this.muteManager = muteManager;
+		this.historyManager = historyManager;
 	}
 
 	@Override
@@ -66,7 +71,14 @@ public class PermaMuteCommand implements TabExecutor {
 		}
 
 		MuteRecord record = muteManager.permaMute(target, sender, reason);
-
+		historyManager.addRecord(
+				target,
+				sender,
+				PunishmentType.PERMAMUTE,
+				reason,
+				-1L,
+				""
+		);
 		langManager.sendMessage(sender, "mute.perma-success", Map.of(
 				"%player%", record.getTargetName(),
 				"%reason%", reason

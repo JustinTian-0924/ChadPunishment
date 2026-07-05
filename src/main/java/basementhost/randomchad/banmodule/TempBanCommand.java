@@ -1,5 +1,7 @@
 package basementhost.randomchad.banmodule;
 
+import basementhost.randomchad.history.PunishmentHistoryManager;
+import basementhost.randomchad.history.PunishmentType;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.DurationUtil;
@@ -21,17 +23,20 @@ public class TempBanCommand implements TabExecutor {
 	private final LangManager langManager;
 	private final ModuleManager moduleManager;
 	private final BanManager banManager;
+	private final PunishmentHistoryManager historyManager;
 
 	public TempBanCommand(
 			JavaPlugin plugin,
 			LangManager langManager,
 			ModuleManager moduleManager,
-			BanManager banManager
+			BanManager banManager,
+			PunishmentHistoryManager historyManager
 	) {
 		this.plugin = plugin;
 		this.langManager = langManager;
 		this.moduleManager = moduleManager;
 		this.banManager = banManager;
+		this.historyManager = historyManager;
 	}
 
 	@Override
@@ -75,6 +80,14 @@ public class TempBanCommand implements TabExecutor {
 		}
 
 		BanRecord record = banManager.tempBan(target, sender, reason, durationMillis);
+		historyManager.addRecord(
+				target,
+				sender,
+				PunishmentType.TEMPBAN,
+				reason,
+				durationMillis,
+				""
+		);
 		String formattedDuration = DurationUtil.formatDuration(langManager, durationMillis);
 
 		langManager.sendMessage(sender, "ban.tempban-success", Map.of(

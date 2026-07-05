@@ -2,6 +2,8 @@ package basementhost.randomchad;
 
 import basementhost.randomchad.banmodule.*;
 import basementhost.randomchad.command.ChadPunishmentCommand;
+import basementhost.randomchad.history.PunishHistoryCommand;
+import basementhost.randomchad.history.PunishmentHistoryManager;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.mutemodule.MuteChatListener;
@@ -22,6 +24,7 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 	private MuteManager muteManager;
 	private BanManager banManager;
 	private IpBanManager ipBanManager;
+	private PunishmentHistoryManager historyManager;
 
 	@Override
 	public void onEnable() {
@@ -29,6 +32,7 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 
 		this.langManager = new LangManager(this);
 		this.moduleManager = new ModuleManager(this);
+		this.historyManager = new PunishmentHistoryManager(this);
 		this.warnManager = new WarnManager(this, langManager);
 		this.muteManager = new MuteManager(this);
 		this.banManager = new BanManager(this, langManager);
@@ -53,7 +57,8 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				warnManager,
 				muteManager,
 				banManager,
-				ipBanManager
+				ipBanManager,
+				historyManager
 		);
 
 		if (getCommand("chadpunishment") != null) {
@@ -65,7 +70,8 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				this,
 				langManager,
 				moduleManager,
-				warnManager
+				warnManager,
+				historyManager
 		);
 
 		if (getCommand("warn") != null) {
@@ -88,7 +94,8 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				this,
 				langManager,
 				moduleManager,
-				muteManager
+				muteManager,
+				historyManager
 		);
 
 		if (getCommand("mute") != null) {
@@ -100,7 +107,8 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				this,
 				langManager,
 				moduleManager,
-				muteManager
+				muteManager,
+				historyManager
 		);
 
 		if (getCommand("permamute") != null) {
@@ -124,7 +132,8 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				this,
 				langManager,
 				moduleManager,
-				banManager
+				banManager,
+				historyManager
 		);
 
 		if (getCommand("tempban") != null) {
@@ -136,7 +145,8 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				this,
 				langManager,
 				moduleManager,
-				banManager
+				banManager,
+				historyManager
 		);
 
 		if (getCommand("ban") != null) {
@@ -148,7 +158,8 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				this,
 				langManager,
 				moduleManager,
-				banManager
+				banManager,
+				historyManager
 		);
 
 		if (getCommand("unban") != null) {
@@ -160,7 +171,8 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				this,
 				langManager,
 				moduleManager,
-				ipBanManager
+				ipBanManager,
+				historyManager
 		);
 
 		if (getCommand("banip") != null) {
@@ -172,12 +184,22 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				this,
 				langManager,
 				moduleManager,
-				ipBanManager
+				ipBanManager,
+				historyManager
 		);
 
 		if (getCommand("unbanip") != null) {
 			getCommand("unbanip").setExecutor(unbanIpCommand);
 			getCommand("unbanip").setTabCompleter(unbanIpCommand);
+		}
+
+		PunishHistoryCommand punishHistoryCommand = new PunishHistoryCommand(
+				langManager,
+				historyManager
+		);
+		if (getCommand("punishhistory") != null) {
+			getCommand("punishhistory").setExecutor(punishHistoryCommand);
+			getCommand("punishhistory").setTabCompleter(punishHistoryCommand);
 		}
 	}
 
@@ -220,5 +242,9 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 
 	public IpBanManager getIpBanManager() {
 		return ipBanManager;
+	}
+
+	public PunishmentHistoryManager getHistoryManager() {
+		return historyManager;
 	}
 }

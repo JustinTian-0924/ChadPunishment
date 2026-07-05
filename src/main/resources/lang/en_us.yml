@@ -93,3 +93,12 @@ ban:
     - "&7Reason: &f%reason%"
     - "&7Issuer: &e%issuer%"
     - "&7Remaining: &e%remaining%"
+
+history:
+  usage: "&cUsage: /punishhistory <player>"
+  no-permission: "&cYou do not have permission to view punishment history."
+  player-not-found: "&cPlayer not found: &e%player%"
+  empty: "&aPlayer &e%player% &ahas no punishment history."
+  header: "&8&m---------- &cPunishment History of %player% &8&m----------"
+  line: "&e#%number% &7Type: &c%type% &7| Issuer: &e%issuer% &7| Reason: &f%reason% &7| Time: &b%time% &7| Duration: &d%duration%"
+  line-extra: "&e#%number% &7Type: &c%type% &7| Issuer: &e%issuer% &7| Reason: &f%reason% &7| Time: &b%time% &7| Duration: &d%duration% &7| Extra: &f%extra%"

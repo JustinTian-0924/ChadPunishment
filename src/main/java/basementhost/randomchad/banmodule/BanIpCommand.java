@@ -1,5 +1,7 @@
 package basementhost.randomchad.banmodule;
 
+import basementhost.randomchad.history.PunishmentHistoryManager;
+import basementhost.randomchad.history.PunishmentType;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.DurationUtil;
@@ -21,17 +23,20 @@ public class BanIpCommand implements TabExecutor {
 	private final LangManager langManager;
 	private final ModuleManager moduleManager;
 	private final IpBanManager ipBanManager;
+	private final PunishmentHistoryManager historyManager;
 
 	public BanIpCommand(
 			JavaPlugin plugin,
 			LangManager langManager,
 			ModuleManager moduleManager,
-			IpBanManager ipBanManager
+			IpBanManager ipBanManager,
+			PunishmentHistoryManager historyManager
 	) {
 		this.plugin = plugin;
 		this.langManager = langManager;
 		this.moduleManager = moduleManager;
 		this.ipBanManager = ipBanManager;
+		this.historyManager = historyManager;
 	}
 
 	@Override
@@ -61,7 +66,7 @@ public class BanIpCommand implements TabExecutor {
 		String reason = plugin.getConfig().getString("settings.default-reason", "No reason provided");
 
 		if (args.length >= 2 && DurationUtil.isDurationText(args[1])) {
-			handleTemporaryIpBan(sender, ip, args);
+			handleTemporaryIpBan(sender, ip, input, args);
 			return true;
 		}
 
@@ -70,6 +75,19 @@ public class BanIpCommand implements TabExecutor {
 		}
 
 		IpBanRecord record = ipBanManager.permanentBanIp(ip, sender.getName(), reason);
+
+		Player targetPlayer = getOnlinePlayerFromInput(input);
+
+		if (targetPlayer != null) {
+			historyManager.addRecord(
+					targetPlayer,
+					sender,
+					PunishmentType.BANIP,
+					reason,
+					-1L,
+					"IP: " + ip
+			);
+		}
 
 		langManager.sendMessage(sender, "ban.banip-success", Map.of(
 				"%ip%", record.getIp(),
@@ -81,7 +99,7 @@ public class BanIpCommand implements TabExecutor {
 		return true;
 	}
 
-	private void handleTemporaryIpBan(CommandSender sender, String ip, String[] args) {
+	private void handleTemporaryIpBan(CommandSender sender, String ip, String input, String[] args) {
 		String durationText = args[1];
 		long durationMillis = DurationUtil.parseDurationToMillis(durationText);
 
@@ -97,6 +115,20 @@ public class BanIpCommand implements TabExecutor {
 		}
 
 		IpBanRecord record = ipBanManager.tempBanIp(ip, sender.getName(), reason, durationMillis);
+
+		Player targetPlayer = getOnlinePlayerFromInput(input);
+
+		if (targetPlayer != null) {
+			historyManager.addRecord(
+					targetPlayer,
+					sender,
+					PunishmentType.TEMPBANIP,
+					reason,
+					durationMillis,
+					"IP: " + ip
+			);
+		}
+
 		String formattedDuration = DurationUtil.formatDuration(langManager, durationMillis);
 
 		langManager.sendMessage(sender, "ban.tempbanip-success", Map.of(
@@ -128,6 +160,14 @@ public class BanIpCommand implements TabExecutor {
 		}
 
 		return ip;
+	}
+
+	private Player getOnlinePlayerFromInput(String input) {
+		if (IpUtil.isIpAddress(input)) {
+			return null;
+		}
+
+		return Bukkit.getPlayerExact(input);
 	}
 
 	@Override

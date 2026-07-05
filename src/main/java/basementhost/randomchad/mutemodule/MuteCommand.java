@@ -1,5 +1,7 @@
 package basementhost.randomchad.mutemodule;
 
+import basementhost.randomchad.history.PunishmentHistoryManager;
+import basementhost.randomchad.history.PunishmentType;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.DurationUtil;
@@ -21,17 +23,20 @@ public class MuteCommand implements TabExecutor {
 	private final LangManager langManager;
 	private final ModuleManager moduleManager;
 	private final MuteManager muteManager;
+	private final PunishmentHistoryManager historyManager;
 
 	public MuteCommand(
 			JavaPlugin plugin,
 			LangManager langManager,
 			ModuleManager moduleManager,
-			MuteManager muteManager
+			MuteManager muteManager,
+			PunishmentHistoryManager historyManager
 	) {
 		this.plugin = plugin;
 		this.langManager = langManager;
 		this.moduleManager = moduleManager;
 		this.muteManager = muteManager;
+		this.historyManager = historyManager;
 	}
 
 	@Override
@@ -75,6 +80,14 @@ public class MuteCommand implements TabExecutor {
 		}
 
 		MuteRecord record = muteManager.mute(target, sender, reason, durationMillis);
+		historyManager.addRecord(
+				target,
+				sender,
+				PunishmentType.MUTE,
+				reason,
+				durationMillis,
+				""
+		);
 		String formattedDuration = DurationUtil.formatDuration(langManager, durationMillis);
 
 		langManager.sendMessage(sender, "mute.success", Map.of(

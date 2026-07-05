@@ -1,5 +1,7 @@
 package basementhost.randomchad.banmodule;
 
+import basementhost.randomchad.history.PunishmentHistoryManager;
+import basementhost.randomchad.history.PunishmentType;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.IpUtil;
@@ -20,17 +22,20 @@ public class UnbanIpCommand implements TabExecutor {
 	private final LangManager langManager;
 	private final ModuleManager moduleManager;
 	private final IpBanManager ipBanManager;
+	private final PunishmentHistoryManager historyManager;
 
 	public UnbanIpCommand(
 			JavaPlugin plugin,
 			LangManager langManager,
 			ModuleManager moduleManager,
-			IpBanManager ipBanManager
+			IpBanManager ipBanManager,
+			PunishmentHistoryManager historyManager
 	) {
 		this.plugin = plugin;
 		this.langManager = langManager;
 		this.moduleManager = moduleManager;
 		this.ipBanManager = ipBanManager;
+		this.historyManager = historyManager;
 	}
 
 	@Override
@@ -70,6 +75,19 @@ public class UnbanIpCommand implements TabExecutor {
 			return true;
 		}
 
+		Player targetPlayer = getOnlinePlayerFromInput(input);
+
+		if (targetPlayer != null) {
+			historyManager.addRecord(
+					targetPlayer,
+					sender,
+					PunishmentType.UNBANIP,
+					reason,
+					0L,
+					"IP: " + ip
+			);
+		}
+
 		langManager.sendMessage(sender, "ban.unbanip-success", Map.of(
 				"%ip%", ip,
 				"%reason%", reason
@@ -98,6 +116,14 @@ public class UnbanIpCommand implements TabExecutor {
 		}
 
 		return ip;
+	}
+
+	private Player getOnlinePlayerFromInput(String input) {
+		if (IpUtil.isIpAddress(input)) {
+			return null;
+		}
+
+		return Bukkit.getPlayerExact(input);
 	}
 
 	@Override

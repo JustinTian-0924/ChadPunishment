@@ -1,5 +1,7 @@
 package basementhost.randomchad.warnmodule;
 
+import basementhost.randomchad.history.PunishmentHistoryManager;
+import basementhost.randomchad.history.PunishmentType;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.DurationUtil;
@@ -22,17 +24,20 @@ public class WarnCommand implements TabExecutor {
 	private final LangManager langManager;
 	private final ModuleManager moduleManager;
 	private final WarnManager warnManager;
+	private final PunishmentHistoryManager historyManager;
 
 	public WarnCommand(
 			JavaPlugin plugin,
 			LangManager langManager,
 			ModuleManager moduleManager,
-			WarnManager warnManager
+			WarnManager warnManager,
+			PunishmentHistoryManager historyManager
 	) {
 		this.plugin = plugin;
 		this.langManager = langManager;
 		this.moduleManager = moduleManager;
 		this.warnManager = warnManager;
+		this.historyManager = historyManager;
 	}
 
 	@Override
@@ -91,6 +96,14 @@ public class WarnCommand implements TabExecutor {
 		}
 
 		WarnRecord record = warnManager.addWarn(target, sender, reason, ttlMillis);
+		historyManager.addRecord(
+				target,
+				sender,
+				PunishmentType.WARN,
+				reason,
+				ttlMillis,
+				""
+		);
 		int activeWarnCount = warnManager.getActiveWarnCount(target.getUniqueId());
 
 		String durationText = DurationUtil.formatDuration(langManager, ttlMillis);

@@ -1,5 +1,5 @@
 name: ChadPunishment
-version: 0.3.0
+version: 0.4.0
 main: basementhost.randomchad.ChadPunishmentPlugin
 api-version: '26.1.2'
 description: Simple punishment management plugin
@@ -54,6 +54,12 @@ commands:
     description: Unban an IP address
     usage: /unbanip <player|ip> [reason]
 
+  punishhistory:
+    description: View punishment history of a player
+    usage: /punishhistory <player>
+    aliases:
+      - phistory
+      - punishhist
 permissions:
   chadpunishment.reload:
     description: Allows reloading ChadPunishment config and language files
@@ -101,4 +107,8 @@ permissions:
 
   chadpunishment.unbanip:
     description: Allows unbanning IP addresses
+    default: op
+
+  chadpunishment.history:
+    description: Allows viewing punishment history
     default: op

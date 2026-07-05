@@ -1,5 +1,7 @@
 package basementhost.randomchad.banmodule;
 
+import basementhost.randomchad.history.PunishmentHistoryManager;
+import basementhost.randomchad.history.PunishmentType;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import org.bukkit.Bukkit;
@@ -20,17 +22,20 @@ public class UnbanCommand implements TabExecutor {
 	private final LangManager langManager;
 	private final ModuleManager moduleManager;
 	private final BanManager banManager;
+	private final PunishmentHistoryManager historyManager;
 
 	public UnbanCommand(
 			JavaPlugin plugin,
 			LangManager langManager,
 			ModuleManager moduleManager,
-			BanManager banManager
+			BanManager banManager,
+			PunishmentHistoryManager historyManager
 	) {
 		this.plugin = plugin;
 		this.langManager = langManager;
 		this.moduleManager = moduleManager;
 		this.banManager = banManager;
+		this.historyManager = historyManager;
 	}
 
 	@Override
@@ -72,6 +77,15 @@ public class UnbanCommand implements TabExecutor {
 			));
 			return true;
 		}
+
+		historyManager.addRecord(
+				target,
+				sender,
+				PunishmentType.UNBAN,
+				reason,
+				0L,
+				""
+		);
 
 		String playerName = target.getName() == null ? targetName : target.getName();
 

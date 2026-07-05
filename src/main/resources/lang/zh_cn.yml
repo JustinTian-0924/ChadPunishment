@@ -93,3 +93,12 @@ ban:
     - "&7原因: &f%reason%"
     - "&7执行者: &e%issuer%"
     - "&7剩余时间: &e%remaining%"
+
+history:
+  usage: "&c用法: /punishhistory <player>"
+  no-permission: "&c你没有权限查看处罚历史。"
+  player-not-found: "&c找不到这个玩家: &e%player%"
+  empty: "&a玩家 &e%player% &a没有处罚历史。"
+  header: "&8&m---------- &c%player% 的处罚历史 &8&m----------"
+  line: "&e#%number% &7类型: &c%type% &7| 执行者: &e%issuer% &7| 原因: &f%reason% &7| 时间: &b%time% &7| 时长: &d%duration%"
+  line-extra: "&e#%number% &7类型: &c%type% &7| 执行者: &e%issuer% &7| 原因: &f%reason% &7| 时间: &b%time% &7| 时长: &d%duration% &7| 额外: &f%extra%"
