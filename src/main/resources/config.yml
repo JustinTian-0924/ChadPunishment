@@ -4,6 +4,12 @@ modules:
   mute: true
   ban: true
   ban-ip: true
+
+compatibility:
+  simple-voice-chat:
+    enabled: true
+    block-muted-players: true
+
 settings:
   default-reason: "Default Reason"
 

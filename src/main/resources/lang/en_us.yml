@@ -94,6 +94,11 @@ ban:
     - "&7Issuer: &e%issuer%"
     - "&7Remaining: &e%remaining%"
 
+voicechat:
+  muted-blocked: "&cYou are muted and cannot use voice chat."
+  hook-enabled: "&aSimple Voice Chat compatibility enabled."
+  hook-disabled: "&7Simple Voice Chat not found. Voice compatibility disabled."
+
 history:
   usage: "&cUsage: /punishhistory <player>"
   no-permission: "&cYou do not have permission to view punishment history."

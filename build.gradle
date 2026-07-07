@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'basementhost.randomchad.ChadPunishment'
-version = '0.4.0'
+version = '0.4.1'
 
 repositories {
     mavenCentral()
@@ -15,11 +15,16 @@ repositories {
         name = 'jitpack'
         url = 'https://jitpack.io'
     }
+    maven {
+            name = 'henkelmax'
+            url = 'https://maven.maxhenkel.de/repository/public'
+        }
 }
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:26.1.2.build.+'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
+    compileOnly 'de.maxhenkel.voicechat:voicechat-api:2.5.0'
 }
 
 java {

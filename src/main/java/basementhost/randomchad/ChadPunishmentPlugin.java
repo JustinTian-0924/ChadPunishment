@@ -11,6 +11,7 @@ import basementhost.randomchad.mutemodule.MuteCommand;
 import basementhost.randomchad.mutemodule.MuteManager;
 import basementhost.randomchad.mutemodule.PermaMuteCommand;
 import basementhost.randomchad.mutemodule.UnmuteCommand;
+import basementhost.randomchad.simplevoicechatmodule.SimpleVoiceChatHook;
 import basementhost.randomchad.warnmodule.CheckWarnCommand;
 import basementhost.randomchad.warnmodule.WarnCommand;
 import basementhost.randomchad.warnmodule.WarnManager;
@@ -40,7 +41,7 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 
 		registerCommands();
 		registerListeners();
-
+		hookSimpleVoiceChat();
 		getLogger().info("ChadPunishment plugin is enabled");
 	}
 
@@ -218,6 +219,17 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 				new IpBanLoginListener(moduleManager, ipBanManager),
 				this
 		);
+	}
+
+	private void hookSimpleVoiceChat() {
+		SimpleVoiceChatHook hook = new SimpleVoiceChatHook(
+				this,
+				langManager,
+				moduleManager,
+				muteManager
+		);
+
+		hook.hook();
 	}
 
 	public LangManager getLangManager() {

@@ -94,6 +94,11 @@ ban:
     - "&7执行者: &e%issuer%"
     - "&7剩余时间: &e%remaining%"
 
+voicechat:
+  muted-blocked: "&c你当前处于禁言状态，无法使用语音聊天。"
+  hook-enabled: "&a已启用 Simple Voice Chat 兼容。"
+  hook-disabled: "&7未检测到 Simple Voice Chat，语音兼容未启用。"
+
 history:
   usage: "&c用法: /punishhistory <player>"
   no-permission: "&c你没有权限查看处罚历史。"

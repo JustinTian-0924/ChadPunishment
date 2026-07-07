@@ -1,10 +1,12 @@
 name: ChadPunishment
-version: 0.4.0
+version: 0.4.1
 main: basementhost.randomchad.ChadPunishmentPlugin
 api-version: '26.1.2'
 description: Simple punishment management plugin
 author: Random_Chad
-
+softdepend:
+  - voicechat
+  -
 commands:
   chadpunishment:
     description: Main command for ChadPunishment
