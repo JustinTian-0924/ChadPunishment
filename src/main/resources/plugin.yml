@@ -6,7 +6,6 @@ description: Simple punishment management plugin
 author: Random_Chad
 softdepend:
   - voicechat
-  -
 commands:
   chadpunishment:
     description: Main command for ChadPunishment
