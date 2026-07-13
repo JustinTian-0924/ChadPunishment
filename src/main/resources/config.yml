@@ -15,6 +15,7 @@ settings:
 
 warn:
   default-ttl: "90d"
+  show-on-join: true
   # These commands are executed when the player's current "valid warning count" reaches a specified number.
   # equivalent to panel input
   active-count-actions:
