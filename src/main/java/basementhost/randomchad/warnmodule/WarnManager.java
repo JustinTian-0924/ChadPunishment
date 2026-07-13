@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 // save, read, clear outdated, calculate valid warns. And execute commands when reach x warns
@@ -132,6 +131,10 @@ public class WarnManager {
 
 	public int getActiveWarnCount(UUID targetUuid) {
 		return getActiveWarns(targetUuid).size();
+	}
+
+	public boolean shouldShowOnJoin() {
+		return plugin.getConfig().getBoolean("warn.show-on-join");
 	}
 
 	public void runActiveWarnActions(OfflinePlayer target, String reason, CommandSender issuer, int activeWarnCount, long ttlMillis) {

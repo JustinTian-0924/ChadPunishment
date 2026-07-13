@@ -14,6 +14,7 @@ import basementhost.randomchad.mutemodule.UnmuteCommand;
 import basementhost.randomchad.simplevoicechatmodule.SimpleVoiceChatHook;
 import basementhost.randomchad.warnmodule.CheckWarnCommand;
 import basementhost.randomchad.warnmodule.WarnCommand;
+import basementhost.randomchad.warnmodule.WarnJoinListener;
 import basementhost.randomchad.warnmodule.WarnManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -217,6 +218,11 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 
 		getServer().getPluginManager().registerEvents(
 				new IpBanLoginListener(moduleManager, ipBanManager),
+				this
+		);
+
+		getServer().getPluginManager().registerEvents(
+				new WarnJoinListener(moduleManager, warnManager, langManager),
 				this
 		);
 	}
