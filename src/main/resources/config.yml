@@ -12,7 +12,24 @@ compatibility:
 
 settings:
   default-reason: "Default Reason"
-
+mute:
+  command-blacklist:
+    enabled: true
+    commands:
+      - "msg"
+      - "tell"
+      - "w"
+      - "whisper"
+      - "reply"
+      - "r"
+      - "pm"
+      - "dm"
+      - "message"
+      - "emsg"
+      - "etell"
+      - "ewhisper"
+      - "ereply"
+      - "er"
 warn:
   default-ttl: "90d"
   show-on-join: true

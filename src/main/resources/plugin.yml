@@ -1,5 +1,5 @@
 name: ChadPunishment
-version: 0.4.1
+version: 0.4.2
 main: basementhost.randomchad.ChadPunishmentPlugin
 api-version: '26.1.2'
 description: Simple punishment management plugin

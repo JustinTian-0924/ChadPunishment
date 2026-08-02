@@ -61,6 +61,11 @@ mute:
     - "&cYou are currently muted and cannot chat."
     - "&7Reason: &f%reason%"
     - "&7Remaining: &e%remaining%"
+  command-blocked:
+    - "&cYou are currently muted and cannot use this command."
+    - "&7Blocked command: &f/%command%"
+    - "&7Mute reason: &f%reason%"
+    - "&7Remaining: &e%remaining%"
 
 ban:
   tempban-usage: "&cUsage: /tempban <player> <duration> [reason]"

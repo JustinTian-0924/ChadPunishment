@@ -61,6 +61,11 @@ mute:
     - "&c你当前处于禁言状态，无法发言。"
     - "&7原因: &f%reason%"
     - "&7剩余时间: &e%remaining%"
+  command-blocked:
+    - "&c你当前处于禁言状态，无法使用该指令。"
+    - "&7被阻止的指令: &f/%command%"
+    - "&7禁言原因: &f%reason%"
+    - "&7剩余时间: &e%remaining%"
 
 ban:
   tempban-usage: "&c用法: /tempban <player> <duration> [reason]"

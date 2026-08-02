@@ -6,11 +6,7 @@ import basementhost.randomchad.history.PunishHistoryCommand;
 import basementhost.randomchad.history.PunishmentHistoryManager;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
-import basementhost.randomchad.mutemodule.MuteChatListener;
-import basementhost.randomchad.mutemodule.MuteCommand;
-import basementhost.randomchad.mutemodule.MuteManager;
-import basementhost.randomchad.mutemodule.PermaMuteCommand;
-import basementhost.randomchad.mutemodule.UnmuteCommand;
+import basementhost.randomchad.mutemodule.*;
 import basementhost.randomchad.simplevoicechatmodule.SimpleVoiceChatHook;
 import basementhost.randomchad.warnmodule.CheckWarnCommand;
 import basementhost.randomchad.warnmodule.WarnCommand;
@@ -207,22 +203,46 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 
 	private void registerListeners() {
 		getServer().getPluginManager().registerEvents(
-				new MuteChatListener(langManager, moduleManager, muteManager),
+				new MuteChatListener(
+						langManager,
+						moduleManager,
+						muteManager
+				),
 				this
 		);
 
 		getServer().getPluginManager().registerEvents(
-				new BanLoginListener(moduleManager, banManager),
+				new MuteCommandListener(
+						this,
+						langManager,
+						moduleManager,
+						muteManager
+				),
 				this
 		);
 
 		getServer().getPluginManager().registerEvents(
-				new IpBanLoginListener(moduleManager, ipBanManager),
+				new BanLoginListener(
+						moduleManager,
+						banManager
+				),
 				this
 		);
 
 		getServer().getPluginManager().registerEvents(
-				new WarnJoinListener(moduleManager, warnManager, langManager),
+				new IpBanLoginListener(
+						moduleManager,
+						ipBanManager
+				),
+				this
+		);
+
+		getServer().getPluginManager().registerEvents(
+				new WarnJoinListener(
+						moduleManager,
+						warnManager,
+						langManager
+				),
 				this
 		);
 	}
