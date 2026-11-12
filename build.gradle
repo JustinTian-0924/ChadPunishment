@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'basementhost.randomchad.ChadPunishment'
-version = '0.4.2'
+version = '0.4.3'
 
 repositories {
     mavenCentral()
@@ -21,8 +21,11 @@ repositories {
         }
 }
 
+// Allow a separate compile check against the oldest supported Paper API.
+def paperVersion = providers.gradleProperty('paperVersion').getOrElse('26.3.build.+')
+
 dependencies {
-    compileOnly 'io.papermc.paper:paper-api:26.1.2.build.+'
+    compileOnly "io.papermc.paper:paper-api:${paperVersion}"
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'de.maxhenkel.voicechat:voicechat-api:2.5.0'
 }
@@ -35,4 +38,5 @@ java {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    options.compilerArgs.add('-Xlint:deprecation')
 }

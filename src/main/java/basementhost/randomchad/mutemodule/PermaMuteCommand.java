@@ -5,11 +5,11 @@ import basementhost.randomchad.history.PunishmentType;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.DurationUtil;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class PermaMuteCommand implements TabExecutor {
+public class PermaMuteCommand implements BasicCommand {
 
 	private final JavaPlugin plugin;
 	private final LangManager langManager;
@@ -40,20 +40,21 @@ public class PermaMuteCommand implements TabExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public void execute(CommandSourceStack source, String[] args) {
+		CommandSender sender = source.getSender();
 		if (!moduleManager.isMuteEnabled()) {
 			langManager.sendMessage(sender, "mute.module-disabled");
-			return true;
+			return;
 		}
 
 		if (!sender.hasPermission("chadpunishment.permamute")) {
 			langManager.sendMessage(sender, "mute.no-permission");
-			return true;
+			return;
 		}
 
 		if (args.length < 1) {
 			langManager.sendMessage(sender, "mute.perma-usage");
-			return true;
+			return;
 		}
 
 		String targetName = args[0];
@@ -61,7 +62,7 @@ public class PermaMuteCommand implements TabExecutor {
 
 		if (!target.hasPlayedBefore() && !target.isOnline()) {
 			langManager.sendMessage(sender, "mute.player-not-found", Map.of("%player%", targetName));
-			return true;
+			return;
 		}
 
 		String reason = plugin.getConfig().getString("settings.default-reason", "No reason provided");
@@ -90,11 +91,10 @@ public class PermaMuteCommand implements TabExecutor {
 			));
 		}
 
-		return true;
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> suggest(CommandSourceStack source, String[] args) {
 		if (args.length == 1) {
 			return Bukkit.getOnlinePlayers()
 					.stream()

@@ -3,11 +3,13 @@ package basementhost.randomchad.banmodule;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.util.DurationUtil;
 import basementhost.randomchad.util.IpUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -148,17 +150,17 @@ public class IpBanManager {
 		return getActiveIpBan(ip) != null;
 	}
 
-	public String buildKickMessage(IpBanRecord record) {
+	public Component buildKickMessage(IpBanRecord record) {
 		long remainingMillis = record.isPermanent()
 				? -1L
 				: record.getExpiresAt() - System.currentTimeMillis();
 
-		return String.join("\n", langManager.getRawMessageList("ban.ip-kick-message", Map.of(
+		return langManager.toComponent(String.join("\n", langManager.getRawMessageList("ban.ip-kick-message", Map.of(
 				"%ip%", record.getIp(),
 				"%reason%", record.getReason(),
 				"%issuer%", record.getIssuerName(),
 				"%remaining%", DurationUtil.formatDuration(langManager, remainingMillis)
-		)));
+		))));
 	}
 
 	public void kickOnlinePlayersWithIp(String ip) {
@@ -176,7 +178,7 @@ public class IpBanManager {
 			}
 
 			if (playerIp.equals(ip)) {
-				player.kickPlayer(buildKickMessage(record));
+				player.kick(buildKickMessage(record), PlayerKickEvent.Cause.BANNED);
 			}
 		}
 	}

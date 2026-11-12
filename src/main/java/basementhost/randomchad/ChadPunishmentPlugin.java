@@ -12,7 +12,11 @@ import basementhost.randomchad.warnmodule.CheckWarnCommand;
 import basementhost.randomchad.warnmodule.WarnCommand;
 import basementhost.randomchad.warnmodule.WarnJoinListener;
 import basementhost.randomchad.warnmodule.WarnManager;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 
 public final class ChadPunishmentPlugin extends JavaPlugin {
 
@@ -48,157 +52,126 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 	}
 
 	private void registerCommands() {
-		ChadPunishmentCommand command = new ChadPunishmentCommand(
-				this,
-				langManager,
-				moduleManager,
-				warnManager,
-				muteManager,
-				banManager,
-				ipBanManager,
-				historyManager
-		);
+		// Register again whenever Paper rebuilds the command list.
+		getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+			Commands commands = event.registrar();
 
-		if (getCommand("chadpunishment") != null) {
-			getCommand("chadpunishment").setExecutor(command);
-			getCommand("chadpunishment").setTabCompleter(command);
-		}
+			ChadPunishmentCommand command = new ChadPunishmentCommand(
+					this,
+					langManager,
+					moduleManager,
+					warnManager,
+					muteManager,
+					banManager,
+					ipBanManager,
+					historyManager
+			);
 
-		WarnCommand warnCommand = new WarnCommand(
-				this,
-				langManager,
-				moduleManager,
-				warnManager,
-				historyManager
-		);
+			commands.register("chadpunishment", "Main command for ChadPunishment", List.of("cpunish", "chadpunish", "punishment"), command);
 
-		if (getCommand("warn") != null) {
-			getCommand("warn").setExecutor(warnCommand);
-			getCommand("warn").setTabCompleter(warnCommand);
-		}
+			WarnCommand warnCommand = new WarnCommand(
+					this,
+					langManager,
+					moduleManager,
+					warnManager,
+					historyManager
+			);
 
-		CheckWarnCommand checkWarnCommand = new CheckWarnCommand(
-				langManager,
-				moduleManager,
-				warnManager
-		);
+			commands.register("warn", "Warn a player", List.of(), warnCommand);
 
-		if (getCommand("checkwarn") != null) {
-			getCommand("checkwarn").setExecutor(checkWarnCommand);
-			getCommand("checkwarn").setTabCompleter(checkWarnCommand);
-		}
+			CheckWarnCommand checkWarnCommand = new CheckWarnCommand(
+					langManager,
+					moduleManager,
+					warnManager
+			);
 
-		MuteCommand muteCommand = new MuteCommand(
-				this,
-				langManager,
-				moduleManager,
-				muteManager,
-				historyManager
-		);
+			commands.register("checkwarn", "Check active warnings of a player", List.of(), checkWarnCommand);
 
-		if (getCommand("mute") != null) {
-			getCommand("mute").setExecutor(muteCommand);
-			getCommand("mute").setTabCompleter(muteCommand);
-		}
+			MuteCommand muteCommand = new MuteCommand(
+					this,
+					langManager,
+					moduleManager,
+					muteManager,
+					historyManager
+			);
 
-		PermaMuteCommand permaMuteCommand = new PermaMuteCommand(
-				this,
-				langManager,
-				moduleManager,
-				muteManager,
-				historyManager
-		);
+			commands.register("mute", "Mute a player", List.of(), muteCommand);
 
-		if (getCommand("permamute") != null) {
-			getCommand("permamute").setExecutor(permaMuteCommand);
-			getCommand("permamute").setTabCompleter(permaMuteCommand);
-		}
+			PermaMuteCommand permaMuteCommand = new PermaMuteCommand(
+					this,
+					langManager,
+					moduleManager,
+					muteManager,
+					historyManager
+			);
 
-		UnmuteCommand unmuteCommand = new UnmuteCommand(
-				this,
-				langManager,
-				moduleManager,
-				muteManager
-		);
+			commands.register("permamute", "Permanently mute a player", List.of(), permaMuteCommand);
 
-		if (getCommand("unmute") != null) {
-			getCommand("unmute").setExecutor(unmuteCommand);
-			getCommand("unmute").setTabCompleter(unmuteCommand);
-		}
+			UnmuteCommand unmuteCommand = new UnmuteCommand(
+					this,
+					langManager,
+					moduleManager,
+					muteManager
+			);
 
-		TempBanCommand tempBanCommand = new TempBanCommand(
-				this,
-				langManager,
-				moduleManager,
-				banManager,
-				historyManager
-		);
+			commands.register("unmute", "Unmute a player", List.of(), unmuteCommand);
 
-		if (getCommand("tempban") != null) {
-			getCommand("tempban").setExecutor(tempBanCommand);
-			getCommand("tempban").setTabCompleter(tempBanCommand);
-		}
+			TempBanCommand tempBanCommand = new TempBanCommand(
+					this,
+					langManager,
+					moduleManager,
+					banManager,
+					historyManager
+			);
 
-		BanCommand banCommand = new BanCommand(
-				this,
-				langManager,
-				moduleManager,
-				banManager,
-				historyManager
-		);
+			commands.register("tempban", "Temporarily ban a player", List.of(), tempBanCommand);
 
-		if (getCommand("ban") != null) {
-			getCommand("ban").setExecutor(banCommand);
-			getCommand("ban").setTabCompleter(banCommand);
-		}
+			BanCommand banCommand = new BanCommand(
+					this,
+					langManager,
+					moduleManager,
+					banManager,
+					historyManager
+			);
 
-		UnbanCommand unbanCommand = new UnbanCommand(
-				this,
-				langManager,
-				moduleManager,
-				banManager,
-				historyManager
-		);
+			commands.register("ban", "Ban a player", List.of(), banCommand);
 
-		if (getCommand("unban") != null) {
-			getCommand("unban").setExecutor(unbanCommand);
-			getCommand("unban").setTabCompleter(unbanCommand);
-		}
+			UnbanCommand unbanCommand = new UnbanCommand(
+					this,
+					langManager,
+					moduleManager,
+					banManager,
+					historyManager
+			);
 
-		BanIpCommand banIpCommand = new BanIpCommand(
-				this,
-				langManager,
-				moduleManager,
-				ipBanManager,
-				historyManager
-		);
+			commands.register("unban", "Unban a player", List.of(), unbanCommand);
 
-		if (getCommand("banip") != null) {
-			getCommand("banip").setExecutor(banIpCommand);
-			getCommand("banip").setTabCompleter(banIpCommand);
-		}
+			BanIpCommand banIpCommand = new BanIpCommand(
+					this,
+					langManager,
+					moduleManager,
+					ipBanManager,
+					historyManager
+			);
 
-		UnbanIpCommand unbanIpCommand = new UnbanIpCommand(
-				this,
-				langManager,
-				moduleManager,
-				ipBanManager,
-				historyManager
-		);
+			commands.register("banip", "IP-ban a player or IP address", List.of(), banIpCommand);
 
-		if (getCommand("unbanip") != null) {
-			getCommand("unbanip").setExecutor(unbanIpCommand);
-			getCommand("unbanip").setTabCompleter(unbanIpCommand);
-		}
+			UnbanIpCommand unbanIpCommand = new UnbanIpCommand(
+					this,
+					langManager,
+					moduleManager,
+					ipBanManager,
+					historyManager
+			);
 
-		PunishHistoryCommand punishHistoryCommand = new PunishHistoryCommand(
-				langManager,
-				historyManager
-		);
-		if (getCommand("punishhistory") != null) {
-			getCommand("punishhistory").setExecutor(punishHistoryCommand);
-			getCommand("punishhistory").setTabCompleter(punishHistoryCommand);
-		}
+			commands.register("unbanip", "Unban an IP address", List.of(), unbanIpCommand);
+
+			PunishHistoryCommand punishHistoryCommand = new PunishHistoryCommand(
+					langManager,
+					historyManager
+			);
+			commands.register("punishhistory", "View punishment history of a player", List.of("phistory", "punishhist"), punishHistoryCommand);
+		});
 	}
 
 	private void registerListeners() {
@@ -250,7 +223,6 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 	private void hookSimpleVoiceChat() {
 		SimpleVoiceChatHook hook = new SimpleVoiceChatHook(
 				this,
-				langManager,
 				moduleManager,
 				muteManager
 		);

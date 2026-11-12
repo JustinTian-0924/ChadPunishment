@@ -3,18 +3,18 @@ package basementhost.randomchad.warnmodule;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.DurationUtil;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
 
 // handle check warn related commands
-public class CheckWarnCommand implements TabExecutor {
+public class CheckWarnCommand implements BasicCommand {
 
 	private final LangManager langManager;
 	private final ModuleManager moduleManager;
@@ -31,20 +31,21 @@ public class CheckWarnCommand implements TabExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public void execute(CommandSourceStack source, String[] args) {
+		CommandSender sender = source.getSender();
 		if (!moduleManager.isWarnEnabled()) {
 			langManager.sendMessage(sender, "warn.module-disabled");
-			return true;
+			return;
 		}
 
 		if (!sender.hasPermission("chadpunishment.checkwarn")) {
 			langManager.sendMessage(sender, "warn.no-permission");
-			return true;
+			return;
 		}
 
 		if (args.length != 1) {
 			langManager.sendMessage(sender, "warn.check-usage");
-			return true;
+			return;
 		}
 
 		String targetName = args[0];
@@ -52,7 +53,7 @@ public class CheckWarnCommand implements TabExecutor {
 
 		if (!target.hasPlayedBefore() && !target.isOnline()) {
 			langManager.sendMessage(sender, "warn.player-not-found", Map.of("%player%", targetName));
-			return true;
+			return;
 		}
 
 		List<WarnRecord> activeWarns = warnManager.getActiveWarns(target.getUniqueId());
@@ -63,7 +64,7 @@ public class CheckWarnCommand implements TabExecutor {
 
 		if (activeWarns.isEmpty()) {
 			langManager.sendMessage(sender, "warn.check-empty");
-			return true;
+			return;
 		}
 
 		long now = System.currentTimeMillis();
@@ -80,11 +81,10 @@ public class CheckWarnCommand implements TabExecutor {
 			));
 		}
 
-		return true;
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> suggest(CommandSourceStack source, String[] args) {
 		if (args.length == 1) {
 			return Bukkit.getOnlinePlayers()
 					.stream()

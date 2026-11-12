@@ -3,17 +3,17 @@ package basementhost.randomchad.history;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.util.DateUtil;
 import basementhost.randomchad.util.DurationUtil;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
 
-public class PunishHistoryCommand implements TabExecutor {
+public class PunishHistoryCommand implements BasicCommand {
 
 	private final LangManager langManager;
 	private final PunishmentHistoryManager historyManager;
@@ -27,15 +27,16 @@ public class PunishHistoryCommand implements TabExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public void execute(CommandSourceStack source, String[] args) {
+		CommandSender sender = source.getSender();
 		if (!sender.hasPermission("chadpunishment.history")) {
 			langManager.sendMessage(sender, "history.no-permission");
-			return true;
+			return;
 		}
 
 		if (args.length != 1) {
 			langManager.sendMessage(sender, "history.usage");
-			return true;
+			return;
 		}
 
 		String targetName = args[0];
@@ -43,7 +44,7 @@ public class PunishHistoryCommand implements TabExecutor {
 
 		if (!target.hasPlayedBefore() && !target.isOnline()) {
 			langManager.sendMessage(sender, "history.player-not-found", Map.of("%player%", targetName));
-			return true;
+			return;
 		}
 
 		List<PunishmentHistoryRecord> records = historyManager.getRecords(target.getUniqueId());
@@ -51,7 +52,7 @@ public class PunishHistoryCommand implements TabExecutor {
 
 		if (records.isEmpty()) {
 			langManager.sendMessage(sender, "history.empty", Map.of("%player%", displayName));
-			return true;
+			return;
 		}
 
 		langManager.sendRawMessage(sender, "history.header", Map.of("%player%", displayName));
@@ -79,7 +80,7 @@ public class PunishHistoryCommand implements TabExecutor {
 			}
 		}
 
-		return true;
+		return;
 	}
 
 	private String formatDuration(long durationMillis) {
@@ -91,7 +92,7 @@ public class PunishHistoryCommand implements TabExecutor {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> suggest(CommandSourceStack source, String[] args) {
 		if (args.length == 1) {
 			return Bukkit.getOnlinePlayers()
 					.stream()

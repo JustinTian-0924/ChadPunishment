@@ -2,12 +2,14 @@ package basementhost.randomchad.banmodule;
 
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.util.DurationUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -169,16 +171,16 @@ public class BanManager {
 		return getActiveBan(targetUuid) != null;
 	}
 
-	public String buildKickMessage(BanRecord record) {
+	public Component buildKickMessage(BanRecord record) {
 		long remainingMillis = record.isPermanent()
 				? -1L
 				: record.getExpiresAt() - System.currentTimeMillis();
 
-		return String.join("\n", langManager.getRawMessageList("ban.kick-message", Map.of(
+		return langManager.toComponent(String.join("\n", langManager.getRawMessageList("ban.kick-message", Map.of(
 				"%reason%", record.getReason(),
 				"%issuer%", record.getIssuerName(),
 				"%remaining%", DurationUtil.formatDuration(langManager, remainingMillis)
-		)));
+		))));
 	}
 
 	public void kickIfOnline(OfflinePlayer target) {
@@ -192,7 +194,7 @@ public class BanManager {
 			return;
 		}
 
-		target.getPlayer().kickPlayer(buildKickMessage(record));
+		target.getPlayer().kick(buildKickMessage(record), PlayerKickEvent.Cause.BANNED);
 	}
 
 	public void cleanupExpiredBans() {

@@ -1,66 +1,11 @@
 name: ChadPunishment
-version: 0.4.2
+version: 0.4.3
 main: basementhost.randomchad.ChadPunishmentPlugin
 api-version: '26.1.2'
 description: Simple punishment management plugin
 author: Random_Chad
 softdepend:
   - voicechat
-commands:
-  chadpunishment:
-    description: Main command for ChadPunishment
-    aliases:
-      - cpunish
-      - chadpunish
-      - punishment
-    usage: /chadpunishment
-
-  warn:
-    description: Warn a player
-    usage: /warn <player> [reason...] [duration]
-
-  checkwarn:
-    description: Check active warnings of a player
-    usage: /checkwarn <player>
-
-  mute:
-    description: Mute a player
-    usage: /mute <player> <duration> [reason]
-
-  permamute:
-    description: Permanently mute a player
-    usage: /permamute <player> [reason]
-
-  unmute:
-    description: Unmute a player
-    usage: /unmute <player> [reason]
-
-  tempban:
-    description: Temporarily ban a player
-    usage: /tempban <player> <duration> [reason]
-
-  ban:
-    description: Ban a player
-    usage: /ban <player> [duration] [reason]
-
-  unban:
-    description: Unban a player
-    usage: /unban <player> [reason]
-
-  banip:
-    description: IP-ban a player or IP address
-    usage: /banip <player|ip> [duration] [reason]
-
-  unbanip:
-    description: Unban an IP address
-    usage: /unbanip <player|ip> [reason]
-
-  punishhistory:
-    description: View punishment history of a player
-    usage: /punishhistory <player>
-    aliases:
-      - phistory
-      - punishhist
 permissions:
   chadpunishment.reload:
     description: Allows reloading ChadPunishment config and language files

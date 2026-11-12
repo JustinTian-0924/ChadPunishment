@@ -1,28 +1,27 @@
 package basementhost.randomchad.simplevoicechatmodule;
 
-import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.mutemodule.MuteManager;
-import de.maxhenkel.voicechat.api.BukkitVoicechatService;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+
+// This entry point must NOT refer to any Simple Voice Chat API types.
+// I'm too lazy to i18n debug console messages lol
 public class SimpleVoiceChatHook {
 
 	private final JavaPlugin plugin;
-	private final LangManager langManager;
 	private final ModuleManager moduleManager;
 	private final MuteManager muteManager;
 
 	public SimpleVoiceChatHook(
 			JavaPlugin plugin,
-			LangManager langManager,
 			ModuleManager moduleManager,
 			MuteManager muteManager
 	) {
 		this.plugin = plugin;
-		this.langManager = langManager;
 		this.moduleManager = moduleManager;
 		this.muteManager = muteManager;
 	}
@@ -38,22 +37,24 @@ public class SimpleVoiceChatHook {
 			return;
 		}
 
-		RegisteredServiceProvider<BukkitVoicechatService> serviceProvider =
-				Bukkit.getServicesManager().getRegistration(BukkitVoicechatService.class);
-
-		if (serviceProvider == null) {
-			plugin.getLogger().warning("Simple Voice Chat plugin found, but BukkitVoicechatService is not available.");
-			return;
+		try {
+			// Load the API-dependent class only after the optional plugin is enabled.
+			Class<?> integration = Class.forName(
+					"basementhost.randomchad.simplevoicechatmodule.SimpleVoiceChatIntegration",
+					true,
+					plugin.getClass().getClassLoader()
+			);
+			integration.getMethod("register", JavaPlugin.class, ModuleManager.class, MuteManager.class)
+					.invoke(null, plugin, moduleManager, muteManager);
+		} catch (InvocationTargetException exception) {
+			logFailure(exception.getCause());
+		} catch (ReflectiveOperationException | LinkageError | RuntimeException exception) {
+			logFailure(exception);
 		}
+	}
 
-		BukkitVoicechatService service = serviceProvider.getProvider();
-
-		service.registerPlugin(new ChadVoicechatPlugin(
-				plugin,
-				moduleManager,
-				muteManager
-		));
-
-		plugin.getLogger().info("Simple Voice Chat compatibility enabled.");
+	private void logFailure(Throwable cause) {
+		plugin.getLogger().log(Level.WARNING,
+				"Could not enable Simple Voice Chat compatibility. Other punishment features remain enabled.", cause);
 	}
 }

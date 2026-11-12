@@ -36,6 +36,10 @@ public class ChadVoicechatPlugin implements VoicechatPlugin {
 	}
 
 	private void onMicrophonePacket(MicrophonePacketEvent event) {
+		if (!plugin.isEnabled()) {
+			return;
+		}
+
 		if (!plugin.getConfig().getBoolean("compatibility.simple-voice-chat.enabled", true)) {
 			return;
 		}

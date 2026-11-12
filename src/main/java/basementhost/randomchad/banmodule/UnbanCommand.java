@@ -4,11 +4,11 @@ import basementhost.randomchad.history.PunishmentHistoryManager;
 import basementhost.randomchad.history.PunishmentType;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class UnbanCommand implements TabExecutor {
+public class UnbanCommand implements BasicCommand {
 
 	private final JavaPlugin plugin;
 	private final LangManager langManager;
@@ -39,20 +39,21 @@ public class UnbanCommand implements TabExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public void execute(CommandSourceStack source, String[] args) {
+		CommandSender sender = source.getSender();
 		if (!moduleManager.isBanEnabled()) {
 			langManager.sendMessage(sender, "ban.module-disabled");
-			return true;
+			return;
 		}
 
 		if (!sender.hasPermission("chadpunishment.unban")) {
 			langManager.sendMessage(sender, "ban.no-permission");
-			return true;
+			return;
 		}
 
 		if (args.length < 1) {
 			langManager.sendMessage(sender, "ban.unban-usage");
-			return true;
+			return;
 		}
 
 		String targetName = args[0];
@@ -60,7 +61,7 @@ public class UnbanCommand implements TabExecutor {
 
 		if (!target.hasPlayedBefore() && !target.isOnline()) {
 			langManager.sendMessage(sender, "ban.player-not-found", Map.of("%player%", targetName));
-			return true;
+			return;
 		}
 
 		String reason = plugin.getConfig().getString("settings.default-reason", "No reason provided");
@@ -75,7 +76,7 @@ public class UnbanCommand implements TabExecutor {
 			langManager.sendMessage(sender, "ban.not-banned", Map.of(
 					"%player%", target.getName() == null ? targetName : target.getName()
 			));
-			return true;
+			return;
 		}
 
 		historyManager.addRecord(
@@ -94,11 +95,10 @@ public class UnbanCommand implements TabExecutor {
 				"%reason%", reason
 		));
 
-		return true;
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> suggest(CommandSourceStack source, String[] args) {
 		if (args.length == 1) {
 			return Bukkit.getOnlinePlayers()
 					.stream()

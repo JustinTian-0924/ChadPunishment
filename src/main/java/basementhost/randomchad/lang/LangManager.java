@@ -1,6 +1,7 @@
 package basementhost.randomchad.lang;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,6 +13,9 @@ import java.util.Map;
 
 // make l18n possible
 public class LangManager {
+
+	private static final LegacyComponentSerializer AMPERSAND_COLORS = LegacyComponentSerializer.legacyAmpersand();
+	private static final LegacyComponentSerializer SECTION_COLORS = LegacyComponentSerializer.legacySection();
 
 	private final JavaPlugin plugin;
 	private FileConfiguration lang;
@@ -91,22 +95,22 @@ public class LangManager {
 	}
 
 	public void sendMessage(CommandSender sender, String path) {
-		sender.sendMessage(getMessage(path));
+		sender.sendMessage(toComponent(getMessage(path)));
 	}
 
 	public void sendMessage(CommandSender sender, String path, Map<String, String> placeholders) {
-		sender.sendMessage(getMessage(path, placeholders));
+		sender.sendMessage(toComponent(getMessage(path, placeholders)));
 	}
 
 	public void sendRawMessage(CommandSender sender, String path) {
-		sender.sendMessage(getRawMessage(path));
+		sender.sendMessage(toComponent(getRawMessage(path)));
 	}
 
 	public void sendMessageList(CommandSender sender, String path) {
 		List<String> messages = lang.getStringList(path);
 
 		for (String message : messages) {
-			sender.sendMessage(color(message));
+			sender.sendMessage(toComponent(color(message)));
 		}
 	}
 
@@ -118,15 +122,20 @@ public class LangManager {
 				message = message.replace(entry.getKey(), entry.getValue());
 			}
 
-			sender.sendMessage(color(message));
+			sender.sendMessage(toComponent(color(message)));
 		}
 	}
 
 	private String color(String message) {
-		return ChatColor.translateAlternateColorCodes('&', message);
+		return SECTION_COLORS.serialize(AMPERSAND_COLORS.deserialize(message));
+	}
+
+	// Keep string getters for placeholders and use Components when sending text to Paper.
+	public Component toComponent(String message) {
+		return SECTION_COLORS.deserialize(message);
 	}
 
 	public void sendRawMessage(CommandSender sender, String path, Map<String, String> placeholders) {
-		sender.sendMessage(getRawMessage(path, placeholders));
+		sender.sendMessage(toComponent(getRawMessage(path, placeholders)));
 	}
 }

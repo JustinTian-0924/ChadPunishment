@@ -5,10 +5,10 @@ import basementhost.randomchad.history.PunishmentType;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.IpUtil;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class UnbanIpCommand implements TabExecutor {
+public class UnbanIpCommand implements BasicCommand {
 
 	private final JavaPlugin plugin;
 	private final LangManager langManager;
@@ -39,27 +39,28 @@ public class UnbanIpCommand implements TabExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public void execute(CommandSourceStack source, String[] args) {
+		CommandSender sender = source.getSender();
 		if (!moduleManager.isBanIpEnabled()) {
 			langManager.sendMessage(sender, "ban.module-disabled");
-			return true;
+			return;
 		}
 
 		if (!sender.hasPermission("chadpunishment.unbanip")) {
 			langManager.sendMessage(sender, "ban.no-permission");
-			return true;
+			return;
 		}
 
 		if (args.length < 1) {
 			langManager.sendMessage(sender, "ban.unbanip-usage");
-			return true;
+			return;
 		}
 
 		String input = args[0];
 		String ip = resolveIpFromInput(input, sender);
 
 		if (ip == null) {
-			return true;
+			return;
 		}
 
 		String reason = plugin.getConfig().getString("settings.default-reason", "No reason provided");
@@ -72,7 +73,7 @@ public class UnbanIpCommand implements TabExecutor {
 
 		if (!removed) {
 			langManager.sendMessage(sender, "ban.ip-not-banned", Map.of("%ip%", ip));
-			return true;
+			return;
 		}
 
 		Player targetPlayer = getOnlinePlayerFromInput(input);
@@ -93,7 +94,7 @@ public class UnbanIpCommand implements TabExecutor {
 				"%reason%", reason
 		));
 
-		return true;
+		return;
 	}
 
 	private String resolveIpFromInput(String input, CommandSender sender) {
@@ -127,7 +128,7 @@ public class UnbanIpCommand implements TabExecutor {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> suggest(CommandSourceStack source, String[] args) {
 		if (args.length == 1) {
 			return Bukkit.getOnlinePlayers()
 					.stream()

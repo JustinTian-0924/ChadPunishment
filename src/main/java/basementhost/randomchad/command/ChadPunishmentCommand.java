@@ -7,15 +7,15 @@ import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.mutemodule.MuteManager;
 import basementhost.randomchad.warnmodule.WarnManager;
-import org.bukkit.command.Command;
+import io.papermc.paper.command.brigadier.BasicCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.Map;
 
-public class ChadPunishmentCommand implements TabExecutor {
+public class ChadPunishmentCommand implements BasicCommand {
 
 	private final JavaPlugin plugin;
 	private final LangManager langManager;
@@ -48,16 +48,17 @@ public class ChadPunishmentCommand implements TabExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public void execute(CommandSourceStack source, String[] args) {
+		CommandSender sender = source.getSender();
 		if (args.length == 0) {
 			langManager.sendMessageList(sender, "usage.main");
-			return true;
+			return;
 		}
 
 		if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
 			if (!sender.hasPermission("chadpunishment.reload")) {
 				langManager.sendMessage(sender, "command.no-permission");
-				return true;
+				return;
 			}
 
 			plugin.reloadConfig();
@@ -68,22 +69,22 @@ public class ChadPunishmentCommand implements TabExecutor {
 			ipBanManager.reload();
 			historyManager.reload();
 			langManager.sendMessage(sender, "command.reload-success");
-			return true;
+			return;
 		}
 
 		if (args.length == 1 && args[0].equalsIgnoreCase("status")) {
 			if (!sender.hasPermission("chadpunishment.status")) {
 				langManager.sendMessage(sender, "command.no-permission");
-				return true;
+				return;
 			}
 
 			sendModuleStatus(sender);
-			return true;
+			return;
 		}
 
 		langManager.sendMessage(sender, "command.unknown-command");
 		langManager.sendMessageList(sender, "usage.main");
-		return true;
+		return;
 	}
 
 	private void sendModuleStatus(CommandSender sender) {
@@ -111,7 +112,7 @@ public class ChadPunishmentCommand implements TabExecutor {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> suggest(CommandSourceStack source, String[] args) {
 		if (args.length == 1) {
 			return List.of("reload", "status");
 		}
