@@ -45,4 +45,4 @@ warn:
     9:
       - "tempban %player% 7d You had violating the server rules for way too many times, This will be your last warning!"
     10:
-      - "ban %player% You had violated the server rules for way too many times, hereby you are permabanned from this server."
+      - "ban %player% permanent You had violated the server rules for way too many times, hereby you are permabanned from this server."

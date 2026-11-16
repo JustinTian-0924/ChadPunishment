@@ -23,6 +23,10 @@ public class DurationUtil {
 		return DURATION_PATTERN.matcher(text).matches();
 	}
 
+	public static boolean isPermanentDuration(String text) {
+		return "permanent".equalsIgnoreCase(text);
+	}
+
 	public static long parseDurationToMillis(String text) {
 		if (text == null) {
 			return -1;
@@ -44,13 +48,22 @@ public class DurationUtil {
 
 		String unit = matcher.group(2).toLowerCase(Locale.ROOT);
 
-		return switch (unit) {
-			case "s" -> amount * 1000L;
-			case "m" -> amount * 60L * 1000L;
-			case "h" -> amount * 60L * 60L * 1000L;
-			case "d" -> amount * 24L * 60L * 60L * 1000L;
-			default -> -1;
+		long multiplier = switch (unit) {
+			case "s" -> 1000L;
+			case "m" -> 60L * 1000L;
+			case "h" -> 60L * 60L * 1000L;
+			case "d" -> 24L * 60L * 60L * 1000L;
+			default -> 0L;
 		};
+
+		try {
+			long durationMillis = Math.multiplyExact(amount, multiplier);
+			// Also leave enough room for the expiry timestamp to be added safely.
+			return durationMillis > 0 && durationMillis <= Long.MAX_VALUE - System.currentTimeMillis()
+					? durationMillis : -1L;
+		} catch (ArithmeticException exception) {
+			return -1L;
+		}
 	}
 
 	public static String formatDuration(LangManager langManager, long millis) {

@@ -6,6 +6,7 @@ import basementhost.randomchad.history.PunishHistoryCommand;
 import basementhost.randomchad.history.PunishmentHistoryManager;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
+import basementhost.randomchad.manager.CommandFormatMigrationManager;
 import basementhost.randomchad.mutemodule.*;
 import basementhost.randomchad.simplevoicechatmodule.SimpleVoiceChatHook;
 import basementhost.randomchad.warnmodule.CheckWarnCommand;
@@ -31,6 +32,7 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
+		CommandFormatMigrationManager.migrateConfig(this);
 
 		this.langManager = new LangManager(this);
 		this.moduleManager = new ModuleManager(this);

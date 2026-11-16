@@ -1,5 +1,6 @@
 package basementhost.randomchad.lang;
 
+import basementhost.randomchad.manager.CommandFormatMigrationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
@@ -8,6 +9,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +46,23 @@ public class LangManager {
 		}
 
 		this.lang = YamlConfiguration.loadConfiguration(langFile);
+		loadDefaults(langFile);
+	}
+
+	private void loadDefaults(File langFile) {
+		String path = "lang/" + langFile.getName();
+		try (InputStream resource = plugin.getResource(path)) {
+			if (resource == null) {
+				return;
+			}
+			FileConfiguration defaults = YamlConfiguration.loadConfiguration(
+					new InputStreamReader(resource, StandardCharsets.UTF_8)
+			);
+			lang.setDefaults(defaults);
+			CommandFormatMigrationManager.migrateLanguage(plugin, langFile, lang, defaults);
+		} catch (IOException exception) {
+			plugin.getLogger().warning("Could not load default messages from " + path);
+		}
 	}
 
 	public void reload() {

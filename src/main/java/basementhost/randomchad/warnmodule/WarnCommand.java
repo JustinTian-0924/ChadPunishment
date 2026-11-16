@@ -53,7 +53,20 @@ public class WarnCommand implements BasicCommand {
 			return;
 		}
 
-		if (args.length < 1) {
+		if (args.length < 2) {
+			langManager.sendMessage(sender, "warn.usage");
+			return;
+		}
+
+		// The duration always occupies the second argument; the remaining text is the reason.
+		String durationArgument = args[1];
+		String requestedDuration = durationArgument.equalsIgnoreCase("default")
+				? plugin.getConfig().getString("warn.default-ttl", "30d")
+				: durationArgument;
+		long ttlMillis = DurationUtil.parseDurationToMillis(requestedDuration);
+
+		if (ttlMillis <= 0) {
+			langManager.sendMessage(sender, "warn.invalid-duration", Map.of("%duration%", requestedDuration));
 			langManager.sendMessage(sender, "warn.usage");
 			return;
 		}
@@ -66,34 +79,10 @@ public class WarnCommand implements BasicCommand {
 			return;
 		}
 
-		String defaultTtlText = plugin.getConfig().getString("warn.default-ttl", "30d");
-		long ttlMillis = DurationUtil.parseDurationToMillis(defaultTtlText);
-
-		if (ttlMillis <= 0) {
-			ttlMillis = DurationUtil.parseDurationToMillis("30d");
-		}
-
 		String reason = plugin.getConfig().getString("settings.default-reason", "No reason provided");
 
-		if (args.length >= 2) {
-			String lastArg = args[args.length - 1];
-
-			if (DurationUtil.isDurationText(lastArg)) {
-				long customTtlMillis = DurationUtil.parseDurationToMillis(lastArg);
-
-				if (customTtlMillis <= 0) {
-					langManager.sendMessage(sender, "warn.invalid-duration", Map.of("%duration%", lastArg));
-					return;
-				}
-
-				ttlMillis = customTtlMillis;
-
-				if (args.length >= 3) {
-					reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length - 1));
-				}
-			} else {
-				reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-			}
+		if (args.length >= 3) {
+			reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 		}
 
 		WarnRecord record = warnManager.addWarn(target, sender, reason, ttlMillis);
@@ -136,8 +125,8 @@ public class WarnCommand implements BasicCommand {
 					.toList();
 		}
 
-		if (args.length >= 2) {
-			return List.of("30s", "10m", "2h", "7d");
+		if (args.length == 2) {
+			return List.of("30s", "10m", "2h", "7d", "default");
 		}
 
 		return List.of();

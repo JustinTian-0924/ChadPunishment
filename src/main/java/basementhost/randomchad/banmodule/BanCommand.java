@@ -52,7 +52,17 @@ public class BanCommand implements BasicCommand {
 			return;
 		}
 
-		if (args.length < 1) {
+		if (args.length < 2) {
+			langManager.sendMessage(sender, "ban.ban-usage");
+			return;
+		}
+
+		String durationText = args[1];
+		boolean permanent = DurationUtil.isPermanentDuration(durationText);
+		long durationMillis = permanent ? -1L : DurationUtil.parseDurationToMillis(durationText);
+
+		if (!permanent && durationMillis <= 0) {
+			langManager.sendMessage(sender, "ban.invalid-ban-duration", Map.of("%duration%", durationText));
 			langManager.sendMessage(sender, "ban.ban-usage");
 			return;
 		}
@@ -66,65 +76,26 @@ public class BanCommand implements BasicCommand {
 		}
 
 		String reason = plugin.getConfig().getString("settings.default-reason", "No reason provided");
-
-		if (args.length >= 2 && DurationUtil.isDurationText(args[1])) {
-			handleTemporaryBan(sender, target, args);
-			return;
-		}
-
-		if (args.length >= 2) {
-			reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-		}
-
-		BanRecord record = banManager.permanentBan(target, sender, reason);
-		historyManager.addRecord(
-				target,
-				sender,
-				PunishmentType.BAN,
-				reason,
-				-1L,
-				""
-		);
-		langManager.sendMessage(sender, "ban.ban-success", Map.of(
-				"%player%", record.getTargetName(),
-				"%reason%", reason
-		));
-
-		banManager.kickIfOnline(target);
-
-		return;
-	}
-
-	private void handleTemporaryBan(CommandSender sender, OfflinePlayer target, String[] args) {
-		String durationText = args[1];
-		long durationMillis = DurationUtil.parseDurationToMillis(durationText);
-
-		if (durationMillis <= 0) {
-			langManager.sendMessage(sender, "ban.invalid-duration", Map.of("%duration%", durationText));
-			return;
-		}
-
-		String reason = plugin.getConfig().getString("settings.default-reason", "No reason provided");
-
 		if (args.length >= 3) {
 			reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 		}
 
-		BanRecord record = banManager.tempBan(target, sender, reason, durationMillis);
+		// A misspelled duration must never silently become a permanent ban.
+		BanRecord record = permanent
+				? banManager.permanentBan(target, sender, reason)
+				: banManager.tempBan(target, sender, reason, durationMillis);
 		historyManager.addRecord(
 				target,
 				sender,
-				PunishmentType.TEMPBAN,
+				permanent ? PunishmentType.BAN : PunishmentType.TEMPBAN,
 				reason,
 				durationMillis,
 				""
 		);
-		String formattedDuration = DurationUtil.formatDuration(langManager, durationMillis);
-
-		langManager.sendMessage(sender, "ban.tempban-success", Map.of(
+		langManager.sendMessage(sender, permanent ? "ban.ban-success" : "ban.tempban-success", Map.of(
 				"%player%", record.getTargetName(),
-				"%reason%", reason,
-				"%duration%", formattedDuration
+				"%duration%", DurationUtil.formatDuration(langManager, durationMillis),
+				"%reason%", reason
 		));
 
 		banManager.kickIfOnline(target);
@@ -140,7 +111,7 @@ public class BanCommand implements BasicCommand {
 		}
 
 		if (args.length == 2) {
-			return List.of("30s", "10m", "1h", "1d", "7d", "30d");
+			return List.of("30s", "10m", "1h", "1d", "7d", "30d", "permanent");
 		}
 
 		return List.of();

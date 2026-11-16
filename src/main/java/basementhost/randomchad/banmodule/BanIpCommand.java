@@ -52,90 +52,51 @@ public class BanIpCommand implements BasicCommand {
 			return;
 		}
 
-		if (args.length < 1) {
+		if (args.length < 2) {
+			langManager.sendMessage(sender, "ban.banip-usage");
+			return;
+		}
+
+		String durationText = args[1];
+		boolean permanent = DurationUtil.isPermanentDuration(durationText);
+		long durationMillis = permanent ? -1L : DurationUtil.parseDurationToMillis(durationText);
+
+		if (!permanent && durationMillis <= 0) {
+			langManager.sendMessage(sender, "ban.invalid-ban-duration", Map.of("%duration%", durationText));
 			langManager.sendMessage(sender, "ban.banip-usage");
 			return;
 		}
 
 		String input = args[0];
 		String ip = resolveIpFromInput(input, sender);
-
 		if (ip == null) {
 			return;
 		}
 
 		String reason = plugin.getConfig().getString("settings.default-reason", "No reason provided");
-
-		if (args.length >= 2 && DurationUtil.isDurationText(args[1])) {
-			handleTemporaryIpBan(sender, ip, input, args);
-			return;
+		if (args.length >= 3) {
+			reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 		}
 
-		if (args.length >= 2) {
-			reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-		}
-
-		IpBanRecord record = ipBanManager.permanentBanIp(ip, sender.getName(), reason);
-
+		IpBanRecord record = permanent
+				? ipBanManager.permanentBanIp(ip, sender.getName(), reason)
+				: ipBanManager.tempBanIp(ip, sender.getName(), reason, durationMillis);
 		Player targetPlayer = getOnlinePlayerFromInput(input);
-
 		if (targetPlayer != null) {
 			historyManager.addRecord(
 					targetPlayer,
 					sender,
 					PunishmentType.BANIP,
 					reason,
-					-1L,
-					"IP: " + ip
-			);
-		}
-
-		langManager.sendMessage(sender, "ban.banip-success", Map.of(
-				"%ip%", record.getIp(),
-				"%reason%", reason
-		));
-
-		ipBanManager.kickOnlinePlayersWithIp(ip);
-
-		return;
-	}
-
-	private void handleTemporaryIpBan(CommandSender sender, String ip, String input, String[] args) {
-		String durationText = args[1];
-		long durationMillis = DurationUtil.parseDurationToMillis(durationText);
-
-		if (durationMillis <= 0) {
-			langManager.sendMessage(sender, "ban.invalid-duration", Map.of("%duration%", durationText));
-			return;
-		}
-
-		String reason = plugin.getConfig().getString("settings.default-reason", "No reason provided");
-
-		if (args.length >= 3) {
-			reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-		}
-
-		IpBanRecord record = ipBanManager.tempBanIp(ip, sender.getName(), reason, durationMillis);
-
-		Player targetPlayer = getOnlinePlayerFromInput(input);
-
-		if (targetPlayer != null) {
-			historyManager.addRecord(
-					targetPlayer,
-					sender,
-					PunishmentType.TEMPBANIP,
-					reason,
 					durationMillis,
 					"IP: " + ip
 			);
 		}
 
-		String formattedDuration = DurationUtil.formatDuration(langManager, durationMillis);
-
-		langManager.sendMessage(sender, "ban.tempbanip-success", Map.of(
+		langManager.sendMessage(sender, permanent ? "ban.banip-success" : "ban.tempbanip-success", Map.of(
 				"%ip%", record.getIp(),
-				"%reason%", reason,
-				"%duration%", formattedDuration
+				"%duration%", DurationUtil.formatDuration(langManager, durationMillis),
+				"%reason%", reason
 		));
 
 		ipBanManager.kickOnlinePlayersWithIp(ip);
@@ -181,7 +142,7 @@ public class BanIpCommand implements BasicCommand {
 		}
 
 		if (args.length == 2) {
-			return List.of("30s", "10m", "1h", "1d", "7d", "30d");
+			return List.of("30s", "10m", "1h", "1d", "7d", "30d", "permanent");
 		}
 
 		return List.of();
