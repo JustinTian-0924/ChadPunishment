@@ -7,6 +7,7 @@ import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.DurationUtil;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -89,7 +90,7 @@ public class MuteCommand implements BasicCommand {
 				durationMillis,
 				""
 		);
-		String formattedDuration = DurationUtil.formatDuration(langManager, durationMillis);
+		Component formattedDuration = DurationUtil.formatDurationComponent(langManager, durationMillis);
 
 		langManager.sendMessage(sender, "mute.success", Map.of(
 				"%player%", record.getTargetName(),

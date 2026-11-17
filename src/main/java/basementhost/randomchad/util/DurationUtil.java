@@ -1,6 +1,8 @@
 package basementhost.randomchad.util;
 
 import basementhost.randomchad.lang.LangManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.Locale;
 import java.util.Map;
@@ -66,9 +68,14 @@ public class DurationUtil {
 		}
 	}
 
+	// Console command substitutions still require plain text; display messages retain their formatting.
 	public static String formatDuration(LangManager langManager, long millis) {
+		return PlainTextComponentSerializer.plainText().serialize(formatDurationComponent(langManager, millis));
+	}
+
+	public static Component formatDurationComponent(LangManager langManager, long millis) {
 		if (millis < 0) {
-			return langManager.getRawMessage("time.permanent");
+			return langManager.getRawComponent("time.permanent");
 		}
 
 		long totalSeconds = millis / 1000L;
@@ -79,27 +86,27 @@ public class DurationUtil {
 		long seconds = totalSeconds % 60L;
 
 		if (days > 0) {
-			return langManager.getRawMessage("time.days-hours", Map.of(
+			return langManager.getRawComponent("time.days-hours", Map.of(
 					"%days%", String.valueOf(days),
 					"%hours%", String.valueOf(hours)
 			));
 		}
 
 		if (hours > 0) {
-			return langManager.getRawMessage("time.hours-minutes", Map.of(
+			return langManager.getRawComponent("time.hours-minutes", Map.of(
 					"%hours%", String.valueOf(hours),
 					"%minutes%", String.valueOf(minutes)
 			));
 		}
 
 		if (minutes > 0) {
-			return langManager.getRawMessage("time.minutes-seconds", Map.of(
+			return langManager.getRawComponent("time.minutes-seconds", Map.of(
 					"%minutes%", String.valueOf(minutes),
 					"%seconds%", String.valueOf(seconds)
 			));
 		}
 
-		return langManager.getRawMessage("time.seconds", Map.of(
+		return langManager.getRawComponent("time.seconds", Map.of(
 				"%seconds%", String.valueOf(seconds)
 		));
 	}

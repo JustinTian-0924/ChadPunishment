@@ -9,6 +9,7 @@ import basementhost.randomchad.mutemodule.MuteManager;
 import basementhost.randomchad.warnmodule.WarnManager;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -97,9 +98,9 @@ public class ChadPunishmentCommand implements BasicCommand {
 	}
 
 	private void sendModuleLine(CommandSender sender, String moduleName, boolean enabled) {
-		String status = enabled
-				? langManager.getRawMessage("module.enabled")
-				: langManager.getRawMessage("module.disabled");
+		Component status = enabled
+				? langManager.getRawComponent("module.enabled")
+				: langManager.getRawComponent("module.disabled");
 
 		langManager.sendRawMessage(
 				sender,

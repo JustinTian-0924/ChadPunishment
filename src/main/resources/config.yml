@@ -34,7 +34,7 @@ warn:
   default-ttl: "90d"
   show-on-join: true
   # These commands are executed when the player's current "valid warning count" reaches a specified number.
-  # equivalent to panel input
+  # command performs equivalent to panel input
   active-count-actions:
     3:
       - "kick %player% You have reached 3 active warnings, make sure to follow the server rules more properly."

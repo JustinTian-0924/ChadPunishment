@@ -3,6 +3,7 @@ package basementhost.randomchad.warnmodule;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.DurationUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -36,7 +37,7 @@ public class WarnJoinListener implements Listener {
 
         for (WarnRecord record : records) {
             long remainingMillis = record.getExpiresAt() - System.currentTimeMillis();
-            String formattedDuration = DurationUtil.formatDuration(langManager, remainingMillis);
+            Component formattedDuration = DurationUtil.formatDurationComponent(langManager, remainingMillis);
             langManager.sendMessage(event.getPlayer(), "warn.received", Map.of(
                     "%reason%", record.getReason(),
                     "%duration%", formattedDuration

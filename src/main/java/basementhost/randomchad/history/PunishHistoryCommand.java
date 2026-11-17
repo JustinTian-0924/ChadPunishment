@@ -5,6 +5,7 @@ import basementhost.randomchad.util.DateUtil;
 import basementhost.randomchad.util.DurationUtil;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -60,10 +61,10 @@ public class PunishHistoryCommand implements BasicCommand {
 		for (int index = 0; index < records.size(); index++) {
 			PunishmentHistoryRecord record = records.get(index);
 
-			String durationText = formatDuration(record.getDurationMillis());
+			Component durationText = formatDuration(record.getDurationMillis());
 			String extra = record.getExtra();
 
-			Map<String, String> placeholders = Map.of(
+			Map<String, Object> placeholders = Map.of(
 					"%number%", String.valueOf(index + 1),
 					"%type%", record.getType().name(),
 					"%issuer%", record.getIssuerName(),
@@ -83,12 +84,12 @@ public class PunishHistoryCommand implements BasicCommand {
 		return;
 	}
 
-	private String formatDuration(long durationMillis) {
+	private Component formatDuration(long durationMillis) {
 		if (durationMillis == 0L) {
-			return "-";
+			return Component.text("-");
 		}
 
-		return DurationUtil.formatDuration(langManager, durationMillis);
+		return DurationUtil.formatDurationComponent(langManager, durationMillis);
 	}
 
 	@Override

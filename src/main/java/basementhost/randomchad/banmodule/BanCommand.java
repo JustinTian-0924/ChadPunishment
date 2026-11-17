@@ -94,7 +94,7 @@ public class BanCommand implements BasicCommand {
 		);
 		langManager.sendMessage(sender, permanent ? "ban.ban-success" : "ban.tempban-success", Map.of(
 				"%player%", record.getTargetName(),
-				"%duration%", DurationUtil.formatDuration(langManager, durationMillis),
+				"%duration%", DurationUtil.formatDurationComponent(langManager, durationMillis),
 				"%reason%", reason
 		));
 

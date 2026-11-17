@@ -78,7 +78,7 @@ public class MuteCommandListener implements Listener {
 				Map.of(
 						"%command%", commandLabel,
 						"%reason%", record.getReason(),
-						"%remaining%", DurationUtil.formatDuration(
+						"%remaining%", DurationUtil.formatDurationComponent(
 								langManager,
 								remainingMillis
 						)

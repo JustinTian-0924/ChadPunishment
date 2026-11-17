@@ -19,8 +19,7 @@ import java.util.Map;
 // make l18n possible
 public class LangManager {
 
-	private static final LegacyComponentSerializer AMPERSAND_COLORS = LegacyComponentSerializer.legacyAmpersand();
-	private static final LegacyComponentSerializer SECTION_COLORS = LegacyComponentSerializer.legacySection();
+	private static final LegacyComponentSerializer SECTION_COLORS = LegacyComponentSerializer.builder().character('\u00a7').hexColors().build();
 
 	private final JavaPlugin plugin;
 	private FileConfiguration lang;
@@ -69,95 +68,89 @@ public class LangManager {
 		loadLang();
 	}
 
-	public String getMessage(String path) {
-		String prefix = lang.getString("prefix", "");
-		String message = lang.getString(path, path);
-
-		return color(prefix + message);
+	public Component getComponent(String path) {
+		return getComponent(path, Map.of());
 	}
 
-	public String getMessage(String path, Map<String, String> placeholders) {
-		String message = getMessage(path);
+	public Component getComponent(String path, Map<String, ?> placeholders) {
+		return MessageFormatter.render(lang.getString("prefix", "") + lang.getString(path, path), placeholders);
+	}
 
-		for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-			message = message.replace(entry.getKey(), entry.getValue());
+	public Component getRawComponent(String path) {
+		return getRawComponent(path, Map.of());
+	}
+
+	public Component getRawComponent(String path, Map<String, ?> placeholders) {
+		return MessageFormatter.render(lang.getString(path, path), placeholders);
+	}
+
+	public List<Component> getRawComponentList(String path, Map<String, ?> placeholders) {
+		return lang.getStringList(path).stream()
+				.map(message -> MessageFormatter.render(message, placeholders))
+				.toList();
+	}
+
+	public Component getRawMultilineComponent(String path, Map<String, ?> placeholders) {
+		var result = Component.text();
+		boolean first = true;
+		for (Component line : getRawComponentList(path, placeholders)) {
+			if (!first) {
+				result.append(Component.newline());
+			}
+			result.append(line);
+			first = false;
 		}
+		return result.build();
+	}
 
-		return message;
+	// Keep legacy string getters for callers that explicitly need text other than rich messages.
+	public String getMessage(String path) {
+		return SECTION_COLORS.serialize(getComponent(path));
+	}
+
+	public String getMessage(String path, Map<String, ?> placeholders) {
+		return SECTION_COLORS.serialize(getComponent(path, placeholders));
 	}
 
 	public String getRawMessage(String path) {
-		return color(lang.getString(path, path));
+		return SECTION_COLORS.serialize(getRawComponent(path));
 	}
 
-	public String getRawMessage(String path, Map<String, String> placeholders) {
-		String message = getRawMessage(path);
-
-		for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-			message = message.replace(entry.getKey(), entry.getValue());
-		}
-
-		return message;
+	public String getRawMessage(String path, Map<String, ?> placeholders) {
+		return SECTION_COLORS.serialize(getRawComponent(path, placeholders));
 	}
 
-	public List<String> getRawMessageList(String path, Map<String, String> placeholders) {
-		List<String> messages = lang.getStringList(path);
-
-		for (int i = 0; i < messages.size(); i++) {
-			String message = messages.get(i);
-
-			for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-				message = message.replace(entry.getKey(), entry.getValue());
-			}
-
-			messages.set(i, color(message));
-		}
-
-		return messages;
+	public List<String> getRawMessageList(String path, Map<String, ?> placeholders) {
+		return getRawComponentList(path, placeholders).stream().map(SECTION_COLORS::serialize).toList();
 	}
 
 	public void sendMessage(CommandSender sender, String path) {
-		sender.sendMessage(toComponent(getMessage(path)));
+		sender.sendMessage(getComponent(path));
 	}
 
-	public void sendMessage(CommandSender sender, String path, Map<String, String> placeholders) {
-		sender.sendMessage(toComponent(getMessage(path, placeholders)));
+	public void sendMessage(CommandSender sender, String path, Map<String, ?> placeholders) {
+		sender.sendMessage(getComponent(path, placeholders));
 	}
 
 	public void sendRawMessage(CommandSender sender, String path) {
-		sender.sendMessage(toComponent(getRawMessage(path)));
+		sender.sendMessage(getRawComponent(path));
+	}
+
+	public void sendRawMessage(CommandSender sender, String path, Map<String, ?> placeholders) {
+		sender.sendMessage(getRawComponent(path, placeholders));
 	}
 
 	public void sendMessageList(CommandSender sender, String path) {
-		List<String> messages = lang.getStringList(path);
+		sendMessageList(sender, path, Map.of());
+	}
 
-		for (String message : messages) {
-			sender.sendMessage(toComponent(color(message)));
+	public void sendMessageList(CommandSender sender, String path, Map<String, ?> placeholders) {
+		for (Component message : getRawComponentList(path, placeholders)) {
+			sender.sendMessage(message);
 		}
 	}
 
-	public void sendMessageList(CommandSender sender, String path, Map<String, String> placeholders) {
-		List<String> messages = lang.getStringList(path);
-
-		for (String message : messages) {
-			for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-				message = message.replace(entry.getKey(), entry.getValue());
-			}
-
-			sender.sendMessage(toComponent(color(message)));
-		}
-	}
-
-	private String color(String message) {
-		return SECTION_COLORS.serialize(AMPERSAND_COLORS.deserialize(message));
-	}
-
-	// Keep string getters for placeholders and use Components when sending text to Paper.
 	public Component toComponent(String message) {
-		return SECTION_COLORS.deserialize(message);
-	}
-
-	public void sendRawMessage(CommandSender sender, String path, Map<String, String> placeholders) {
-		sender.sendMessage(toComponent(getRawMessage(path, placeholders)));
+		return MessageFormatter.render(message, Map.of());
 	}
 }

@@ -46,8 +46,9 @@ public final class CommandFormatMigrationManager {
 	}
 
 	public static void migrateLanguage(JavaPlugin plugin, File file, FileConfiguration messages, FileConfiguration defaults) {
-		try (InputStream resource = plugin.getResource("lang/command-format-v1.yml")) {
+		try (InputStream resource = plugin.getResource("internal/migrations/command-format-v1.yml")) {
 			if (resource == null) {
+				plugin.getLogger().warning("Command-format migration data is missing from the plugin JAR.");
 				return;
 			}
 

@@ -95,7 +95,7 @@ public class BanIpCommand implements BasicCommand {
 
 		langManager.sendMessage(sender, permanent ? "ban.banip-success" : "ban.tempbanip-success", Map.of(
 				"%ip%", record.getIp(),
-				"%duration%", DurationUtil.formatDuration(langManager, durationMillis),
+				"%duration%", DurationUtil.formatDurationComponent(langManager, durationMillis),
 				"%reason%", reason
 		));
 

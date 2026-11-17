@@ -77,7 +77,7 @@ public class CheckWarnCommand implements BasicCommand {
 					"%number%", String.valueOf(index + 1),
 					"%reason%", record.getReason(),
 					"%issuer%", record.getIssuerName(),
-					"%remaining%", DurationUtil.formatDuration(langManager, remainingMillis)
+					"%remaining%", DurationUtil.formatDurationComponent(langManager, remainingMillis)
 			));
 		}
 

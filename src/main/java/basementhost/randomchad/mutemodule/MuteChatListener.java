@@ -45,7 +45,7 @@ public class MuteChatListener implements Listener {
 
 		langManager.sendMessageList(event.getPlayer(), "mute.chat-blocked", Map.of(
 				"%reason%", record.getReason(),
-				"%remaining%", DurationUtil.formatDuration(langManager, remainingMillis)
+				"%remaining%", DurationUtil.formatDurationComponent(langManager, remainingMillis)
 		));
 	}
 }

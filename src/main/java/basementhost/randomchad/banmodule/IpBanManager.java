@@ -155,12 +155,12 @@ public class IpBanManager {
 				? -1L
 				: record.getExpiresAt() - System.currentTimeMillis();
 
-		return langManager.toComponent(String.join("\n", langManager.getRawMessageList("ban.ip-kick-message", Map.of(
+		return langManager.getRawMultilineComponent("ban.ip-kick-message", Map.of(
 				"%ip%", record.getIp(),
 				"%reason%", record.getReason(),
 				"%issuer%", record.getIssuerName(),
-				"%remaining%", DurationUtil.formatDuration(langManager, remainingMillis)
-		))));
+				"%remaining%", DurationUtil.formatDurationComponent(langManager, remainingMillis)
+		));
 	}
 
 	public void kickOnlinePlayersWithIp(String ip) {

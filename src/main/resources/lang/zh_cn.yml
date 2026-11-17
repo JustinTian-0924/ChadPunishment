@@ -1,4 +1,4 @@
-prefix: "&7[&cChadPunishment&7] "
+prefix: "<dark_gray>[<gradient:#ff5555:#ffaa00>ChadPunishment</gradient><dark_gray>] <reset> "
 
 command:
   player-only: "&c这个指令只能由玩家使用。"

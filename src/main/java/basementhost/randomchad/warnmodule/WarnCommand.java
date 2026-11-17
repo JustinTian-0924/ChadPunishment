@@ -7,6 +7,7 @@ import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.util.DurationUtil;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -96,7 +97,7 @@ public class WarnCommand implements BasicCommand {
 		);
 		int activeWarnCount = warnManager.getActiveWarnCount(target.getUniqueId());
 
-		String durationText = DurationUtil.formatDuration(langManager, ttlMillis);
+		Component durationText = DurationUtil.formatDurationComponent(langManager, ttlMillis);
 
 		langManager.sendMessage(sender, "warn.success", Map.of(
 				"%player%", record.getTargetName(),
