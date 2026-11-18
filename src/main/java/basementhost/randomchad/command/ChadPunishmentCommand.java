@@ -26,6 +26,8 @@ public class ChadPunishmentCommand implements BasicCommand {
 	private final BanManager banManager;
 	private final IpBanManager ipBanManager;
 	private final PunishmentHistoryManager historyManager;
+	private final PunishmentQueryCommand queryCommand;
+	private final HelpCommand helpCommand;
 
 
 	public ChadPunishmentCommand(
@@ -36,7 +38,8 @@ public class ChadPunishmentCommand implements BasicCommand {
 			MuteManager muteManager,
 			BanManager banManager,
 			IpBanManager ipBanManager,
-			PunishmentHistoryManager historyManager
+			PunishmentHistoryManager historyManager,
+			PunishmentQueryCommand queryCommand
 	) {
 		this.plugin = plugin;
 		this.langManager = langManager;
@@ -46,13 +49,32 @@ public class ChadPunishmentCommand implements BasicCommand {
 		this.banManager = banManager;
 		this.ipBanManager = ipBanManager;
 		this.historyManager =historyManager;
+		this.queryCommand = queryCommand;
+		this.helpCommand = new HelpCommand(langManager);
 	}
 
 	@Override
 	public void execute(CommandSourceStack source, String[] args) {
 		CommandSender sender = source.getSender();
 		if (args.length == 0) {
-			langManager.sendMessageList(sender, "usage.main");
+			helpCommand.show(sender, 1);
+			return;
+		}
+
+		if (args[0].equalsIgnoreCase("help")) {
+			try {
+				if (args.length > 2) {
+					throw new NumberFormatException();
+				}
+				helpCommand.show(sender, args.length == 2 ? Integer.parseInt(args[1]) : 1);
+			} catch (NumberFormatException exception) {
+				langManager.sendMessage(sender, "help.invalid-page");
+			}
+			return;
+		}
+
+		if (isQuery(args[0])) {
+			queryCommand.execute(source, args);
 			return;
 		}
 
@@ -84,7 +106,7 @@ public class ChadPunishmentCommand implements BasicCommand {
 		}
 
 		langManager.sendMessage(sender, "command.unknown-command");
-		langManager.sendMessageList(sender, "usage.main");
+		helpCommand.show(sender, 1);
 		return;
 	}
 
@@ -115,9 +137,21 @@ public class ChadPunishmentCommand implements BasicCommand {
 	@Override
 	public List<String> suggest(CommandSourceStack source, String[] args) {
 		if (args.length == 1) {
-			return List.of("reload", "status");
+			String prefix = args[0].toLowerCase(java.util.Locale.ROOT);
+			return List.of("help", "reload", "status", "query", "check", "browse").stream()
+					.filter(value -> value.startsWith(prefix)).toList();
+		}
+		if (args.length >= 2 && isQuery(args[0])) {
+			return queryCommand.suggest(source, args);
+		}
+		if (args.length == 2 && args[0].equalsIgnoreCase("help")) {
+			return List.of("1", "2").stream().filter(value -> value.startsWith(args[1])).toList();
 		}
 
 		return List.of();
+	}
+
+	private static boolean isQuery(String value) {
+		return value.equalsIgnoreCase("query") || value.equalsIgnoreCase("check") || value.equalsIgnoreCase("browse");
 	}
 }

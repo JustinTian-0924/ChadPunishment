@@ -1,106 +1,39 @@
 package basementhost.randomchad.history;
 
+import basementhost.randomchad.command.PunishmentQueryCommand;
 import basementhost.randomchad.lang.LangManager;
-import basementhost.randomchad.util.DateUtil;
-import basementhost.randomchad.util.DurationUtil;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Map;
 
-public class PunishHistoryCommand implements BasicCommand {
+// Keep the original history command and aliases on the same paginated query view.
+public final class PunishHistoryCommand implements BasicCommand {
 
 	private final LangManager langManager;
-	private final PunishmentHistoryManager historyManager;
+	private final PunishmentQueryCommand queryCommand;
 
-	public PunishHistoryCommand(
-			LangManager langManager,
-			PunishmentHistoryManager historyManager
-	) {
+	public PunishHistoryCommand(LangManager langManager, PunishmentQueryCommand queryCommand) {
 		this.langManager = langManager;
-		this.historyManager = historyManager;
+		this.queryCommand = queryCommand;
 	}
 
 	@Override
 	public void execute(CommandSourceStack source, String[] args) {
-		CommandSender sender = source.getSender();
-		if (!sender.hasPermission("chadpunishment.history")) {
-			langManager.sendMessage(sender, "history.no-permission");
+		if (!source.getSender().hasPermission("chadpunishment.history")) {
+			langManager.sendMessage(source.getSender(), "history.no-permission");
 			return;
 		}
-
-		if (args.length != 1) {
-			langManager.sendMessage(sender, "history.usage");
+		if (args.length < 1 || args.length > 2) {
+			langManager.sendMessage(source.getSender(), "query.legacy-usage");
 			return;
 		}
-
-		String targetName = args[0];
-		OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
-
-		if (!target.hasPlayedBefore() && !target.isOnline()) {
-			langManager.sendMessage(sender, "history.player-not-found", Map.of("%player%", targetName));
-			return;
-		}
-
-		List<PunishmentHistoryRecord> records = historyManager.getRecords(target.getUniqueId());
-		String displayName = target.getName() == null ? targetName : target.getName();
-
-		if (records.isEmpty()) {
-			langManager.sendMessage(sender, "history.empty", Map.of("%player%", displayName));
-			return;
-		}
-
-		langManager.sendRawMessage(sender, "history.header", Map.of("%player%", displayName));
-
-		for (int index = 0; index < records.size(); index++) {
-			PunishmentHistoryRecord record = records.get(index);
-
-			Component durationText = formatDuration(record.getDurationMillis());
-			String extra = record.getExtra();
-
-			Map<String, Object> placeholders = Map.of(
-					"%number%", String.valueOf(index + 1),
-					"%type%", record.getType().name(),
-					"%issuer%", record.getIssuerName(),
-					"%reason%", record.getReason(),
-					"%time%", DateUtil.formatMillis(record.getCreatedAt()),
-					"%duration%", durationText,
-					"%extra%", extra == null ? "" : extra
-			);
-
-			if (extra != null && !extra.isBlank()) {
-				langManager.sendRawMessage(sender, "history.line-extra", placeholders);
-			} else {
-				langManager.sendRawMessage(sender, "history.line", placeholders);
-			}
-		}
-
-		return;
-	}
-
-	private Component formatDuration(long durationMillis) {
-		if (durationMillis == 0L) {
-			return Component.text("-");
-		}
-
-		return DurationUtil.formatDurationComponent(langManager, durationMillis);
+		queryCommand.execute(source, args.length == 1
+				? new String[]{"query", "all", args[0]} : new String[]{"query", "all", args[0], args[1]});
 	}
 
 	@Override
 	public List<String> suggest(CommandSourceStack source, String[] args) {
-		if (args.length == 1) {
-			return Bukkit.getOnlinePlayers()
-					.stream()
-					.map(Player::getName)
-					.toList();
-		}
-
-		return List.of();
+		return args.length == 1 ? queryCommand.suggest(source, new String[]{"query", "all", args[0]}) : List.of();
 	}
 }

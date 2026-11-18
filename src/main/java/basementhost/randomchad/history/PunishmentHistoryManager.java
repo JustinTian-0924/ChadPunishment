@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class PunishmentHistoryManager {
@@ -19,6 +22,7 @@ public class PunishmentHistoryManager {
 	private final JavaPlugin plugin;
 	private File historyFile;
 	private FileConfiguration historyData;
+	private volatile Map<UUID, String> recordedPlayers = Map.of();
 
 	public PunishmentHistoryManager(JavaPlugin plugin) {
 		this.plugin = plugin;
@@ -44,6 +48,7 @@ public class PunishmentHistoryManager {
 		}
 
 		historyData = YamlConfiguration.loadConfiguration(historyFile);
+		refreshRecordedPlayers();
 	}
 
 	public void reload() {
@@ -96,6 +101,9 @@ public class PunishmentHistoryManager {
 		historyData.set(path + ".extra", extra == null ? "" : extra);
 
 		saveHistoryData();
+		Map<UUID, String> players = new HashMap<>(recordedPlayers);
+		players.put(targetUuid, targetName == null ? targetUuid.toString() : targetName);
+		recordedPlayers = Map.copyOf(players);
 	}
 
 	public List<PunishmentHistoryRecord> getRecords(UUID targetUuid) {
@@ -142,6 +150,39 @@ public class PunishmentHistoryManager {
 		records.sort(Comparator.comparingLong(PunishmentHistoryRecord::getCreatedAt).reversed());
 
 		return records;
+	}
+
+	public Map<UUID, String> getRecordedPlayers() {
+		return recordedPlayers;
+	}
+
+	private void refreshRecordedPlayers() {
+		Map<UUID, String> players = new LinkedHashMap<>();
+		ConfigurationSection section = historyData.getConfigurationSection("players");
+		if (section == null) {
+			recordedPlayers = Map.of();
+			return;
+		}
+		for (String key : section.getKeys(false)) {
+			try {
+				UUID uuid = UUID.fromString(key);
+				ConfigurationSection records = section.getConfigurationSection(key + ".records");
+				if (records == null) {
+					continue;
+				}
+				long newest = Long.MIN_VALUE;
+				for (String id : records.getKeys(false)) {
+					long created = records.getLong(id + ".created-at");
+					if (created >= newest) {
+						newest = created;
+						players.put(uuid, records.getString(id + ".target-name", uuid.toString()));
+					}
+				}
+			} catch (IllegalArgumentException ignored) {
+				// A malformed legacy key must not prevent other players from being queried.
+			}
+		}
+		recordedPlayers = Map.copyOf(players);
 	}
 
 	private void saveHistoryData() {

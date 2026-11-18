@@ -2,8 +2,10 @@ package basementhost.randomchad;
 
 import basementhost.randomchad.banmodule.*;
 import basementhost.randomchad.command.ChadPunishmentCommand;
+import basementhost.randomchad.command.PunishmentQueryCommand;
 import basementhost.randomchad.history.PunishHistoryCommand;
 import basementhost.randomchad.history.PunishmentHistoryManager;
+import basementhost.randomchad.history.PunishmentQueryManager;
 import basementhost.randomchad.lang.LangManager;
 import basementhost.randomchad.manager.ModuleManager;
 import basementhost.randomchad.manager.CommandFormatMigrationManager;
@@ -57,6 +59,9 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 		// Register again whenever Paper rebuilds the command list.
 		getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
 			Commands commands = event.registrar();
+			PunishmentQueryManager queryManager = new PunishmentQueryManager(
+					historyManager, warnManager, muteManager, banManager, ipBanManager, moduleManager);
+			PunishmentQueryCommand queryCommand = new PunishmentQueryCommand(langManager, queryManager);
 
 			ChadPunishmentCommand command = new ChadPunishmentCommand(
 					this,
@@ -66,10 +71,11 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 					muteManager,
 					banManager,
 					ipBanManager,
-					historyManager
+					historyManager,
+					queryCommand
 			);
 
-			commands.register("chadpunishment", "Main command for ChadPunishment", List.of("cpunish", "chadpunish", "punishment"), command);
+			commands.register("chadpunishment", "Main command for ChadPunishment", List.of("cpunish", "chadpunish", "punishment", "chatpunishment"), command);
 
 			WarnCommand warnCommand = new WarnCommand(
 					this,
@@ -170,7 +176,7 @@ public final class ChadPunishmentPlugin extends JavaPlugin {
 
 			PunishHistoryCommand punishHistoryCommand = new PunishHistoryCommand(
 					langManager,
-					historyManager
+					queryCommand
 			);
 			commands.register("punishhistory", "View punishment history of a player", List.of("phistory", "punishhist"), punishHistoryCommand);
 		});
